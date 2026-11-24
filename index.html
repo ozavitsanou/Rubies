@@ -434,7 +434,7 @@ img{display:block}
       <button class="back" data-go="store" data-dir="back" aria-label="Back"><img src="assets/fig/icon-chevron-left.svg" width="24" height="24" alt=""></button>
       <div class="pad" style="margin-top:8px"><div class="s6 b strong" style="line-height:40px">Order</div><div class="s2" style="margin-top:2px"><b>Delivery:</b> In 10&#39; - 15&#39; <img class="ichev" src="assets/fig/icon-chevron-down.svg" alt=""></div></div>
       <div class="pad" style="margin-top:14px">
-        <div class="card2"><div class="map"><i style="left:0;top:36px;width:52px;height:3px"></i><i style="left:8px;top:0;width:3px;height:52px"></i><i style="left:30px;top:0;width:2px;height:52px"></i><i style="left:0;top:16px;width:52px;height:2px"></i><b></b><u></u></div><div style="flex:1"><div class="s3 b strong">Sevastias 29</div><div class="s2 sec">Floor 4 &bull; Athens</div></div><span class="s4"><img class="ichev r" src="assets/fig/icon-chevron-left.svg" alt=""></span></div>
+        <div class="card2"><div class="map"><i style="left:0;top:36px;width:52px;height:3px"></i><i style="left:8px;top:0;width:3px;height:52px"></i><i style="left:30px;top:0;width:2px;height:52px"></i><i style="left:0;top:16px;width:52px;height:2px"></i><b></b><u></u></div><div style="flex:1"><div class="s3 b strong">Sevastias 1</div><div class="s2 sec">Floor 4 &bull; Athens</div></div><span class="s4"><img class="ichev r" src="assets/fig/icon-chevron-left.svg" alt=""></span></div>
         <div class="row" style="gap:12px;margin-top:12px;align-items:stretch">
           <div class="card2" style="width:100px;justify-content:center;color:var(--text-secondary)" ><span class="s2">+ Coupon</span></div>
           <div class="card2" style="flex:1;flex-direction:column;align-items:flex-start;gap:4px"><span class="s1 sec">Payment method</span><span class="row s2 b strong" style="gap:8px"><svg width="22" height="16" viewBox="0 0 22 16"><rect x=".75" y=".75" width="20.5" height="14.5" rx="3" fill="none" stroke="#000" stroke-width="1.5"/><rect y="3" width="22" height="4" fill="#000"/></svg>Credit / debit card</span></div>
@@ -473,7 +473,7 @@ img{display:block}
   </section>
 
 </div>
-<div class="hint">Interactive prototype · tap Food,coffee → Coffee Lab → + → View order → Send Order → watch the status animation</div>
+<div class="hint">Interactive prototype · Address: Sevastias 1 · Tap Food,coffee in the nav bar to find Coffee Lab → + → View order → Send Order → watch the status animation<br>Press Cmd + R (Ctrl + R on Windows) to reset the prototype and start again</div>
 
 <script>
 /* ---------- data ---------- */
@@ -713,7 +713,9 @@ function startOver(){
   document.getElementById('coffeeCard').focus({preventScroll:true}); // the button disappears, so keep focus somewhere useful
 }
 refreshCart();
-const start=location.hash.slice(1);
+// Reloading the page (Cmd/Ctrl + R, F5) always restarts the demo from Home; a fresh link with #screen still opens that screen.
+const navType=(performance.getEntriesByType('navigation')[0]||{}).type;
+const start=navType==='reload'?'':location.hash.slice(1);
 go(order.includes(start)?start:'home');
 
 /* ---------- drag-to-scroll for every carousel (mouse); touch scrolls natively ---------- */

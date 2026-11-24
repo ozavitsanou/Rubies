@@ -12,7 +12,7 @@ Open `index.html` in a browser, or serve the folder:
 python3 -m http.server 8000
 ```
 
-then visit http://localhost:8000. Deep links work with a hash, e.g. `index.html#store` or `index.html#status`.
+then visit http://localhost:8000. Deep links work with a hash, e.g. `index.html#store` or `index.html#status` (a reload always goes back to Home).
 
 ## Publish with GitHub Pages
 
@@ -39,6 +39,9 @@ assets/fig/    vectors and images taken from the Figma design (icons, ruby stamp
 Buttons are real `<button>` elements with visible keyboard focus, state changes are announced to screen readers, and all motion respects **Reduce motion**.
 
 ## Notes
+
+- **How to find the store:** the delivery address is **Sevastias 1**. Tap **Food,coffee** in the nav bar to find **Coffee Lab**.
+- **Reset:** press **Cmd + R** (Ctrl + R on Windows) to reload the page. The prototype always starts again from Home, with Coffee Lab at 1 ruby and an empty basket.
 
 - Store logos, covers, menu photos and banners are e-food images, used here for design mock-ups only. Check you have the right to publish them before making the repository public.
 - This is a design prototype: there is no backend, and no real orders or payments are made.
