@@ -331,9 +331,34 @@ img{display:block}
 /* flow hint */
 .hint{position:fixed;left:0;right:0;bottom:8px;text-align:center;color:#666;font-size:12px;pointer-events:none}
 @media (max-width:430px){.hint{display:none}}
+/* about the prototype: side note on wide screens, small floating "About" button + sheet everywhere else */
+body{position:relative}
+.about-side{display:none;position:absolute;right:calc(50% + 245px);top:max(24px,calc(50% - 326px));width:280px;color:#333;font-size:14px;line-height:1.5}
+.about-side h2,.about-sheet h2{font-size:16px;font-weight:700;color:#1a1a1a;margin:0 0 8px}
+.about-side p,.about-sheet p{margin:0 0 10px}
+@media (min-width:1100px){.about-side{display:block}.about-fab,.about-sheet{display:none!important}}
+.about-fab{position:absolute;right:16px;bottom:88px;z-index:21;display:none}
+.phone[data-screen=home] .about-fab{display:block}
+.about-fab button{position:relative;isolation:isolate;display:flex;align-items:center;justify-content:center;height:28px;padding:0 14px;border:0;border-radius:30px;cursor:pointer;
+  font:700 11px/1 Roboto,var(--font-family);letter-spacing:.02em;color:#000;text-transform:uppercase;
+  background:rgba(141,33,242,.5);-webkit-backdrop-filter:blur(4px) saturate(1.8) brightness(1.08);backdrop-filter:blur(4px) saturate(1.8) brightness(1.08);
+  box-shadow:inset 2px 2px 1px -1px rgba(255,255,255,.85),inset -2px -2px 1px -1px rgba(255,255,255,.45),inset 0 0 8px 1px rgba(255,255,255,.28),inset 0 -5px 10px -5px rgba(141,33,242,.45)}
+.about-fab button::after{content:"";position:absolute;left:12%;right:12%;top:2px;height:45%;border-radius:30px 30px 60% 60%/30px 30px 100% 100%;z-index:-1;pointer-events:none;background:linear-gradient(180deg,rgba(255,255,255,.38),rgba(255,255,255,0))}
+.about-fab button:focus-visible,.about-sheet button:focus-visible{outline:3px solid #1a1a1a;outline-offset:3px;box-shadow:0 0 0 3px #fff}
+.about-sheet{position:absolute;left:16px;right:16px;bottom:126px;z-index:22;background:#fff;border-radius:12px;padding:16px 16px 6px;font-size:14px;line-height:1.5;color:#333;box-shadow:0 8px 30px rgba(0,0,0,.22);max-height:60%;overflow:auto}
+.about-sheet[hidden]{display:none}
+.about-sheet .x{position:absolute;right:8px;top:8px;width:32px;height:32px;border:0;border-radius:50%;background:#f2f2f2;font-size:18px;line-height:1;cursor:pointer;color:#1a1a1a}
+.about-sheet h2{padding-right:36px}
 </style>
 </head>
 <body>
+<aside class="about-side" aria-labelledby="aboutSideTitle">
+  <h2 id="aboutSideTitle">About this prototype</h2>
+  <p>A static, dependency-free HTML prototype of the Rubies loyalty flow: earn a ruby with every order from a store, see your progress, and unlock a coupon.</p>
+  <p><strong>Flow:</strong> Home ("Your Rubies and coupons" cards) → Food, coffee → Coffee Lab store (stamp card, tap an item to add it) → Order (payment) → Order status (the stamp card drops in, a new ruby stamp lands with a burst, then the map and pin appear). Each order adds one ruby; after the 4th ruby the demo ends and a Start over button resets it.</p>
+  <p><strong>How to try it:</strong> the delivery address is <strong>Sevastias 1</strong>. Tap <strong>Food,coffee</strong> in the nav bar to find <strong>Coffee Lab</strong>.</p>
+  <p><strong>Reset:</strong> press Cmd + R (Ctrl + R on Windows) to reload and start again from Home.</p>
+</aside>
 <div class="phone" id="phone">
 
   <!-- 1 · HOME  (Figma: Home v4 80:17435) -->
@@ -341,7 +366,7 @@ img{display:block}
     <img class="statusbar" src="assets/fig/statusbar.svg" alt="">
     <div class="scroll" style="padding-top:70px;padding-bottom:100px">
      <div style="display:flex;flex-direction:column;gap:16px">
-      <div class="f-header"><div style="display:flex;flex-direction:column;gap:2px"><div class="f-addr">Address <img src="assets/fig/chevron-down.svg" width="14" height="14" alt=""></div></div>
+      <div class="f-header"><div style="display:flex;flex-direction:column;gap:2px"><div class="f-addr">Sevastias 1 <img src="assets/fig/chevron-down.svg" width="14" height="14" alt=""></div></div>
         <div class="f-iconbtns"><span class="f-iconbtn"><span class="ic"><img src="assets/fig/icon-basket.svg" width="24" height="24" alt="Basket" style="inset:0"></span></span><span class="f-iconbtn"><span class="ic"><img src="assets/fig/icon-user.svg" width="18" height="20" alt="Profile" style="left:3px;top:2px"></span></span><span class="f-notif">1</span></div></div>
       <div class="f-search"><img src="assets/fig/search.svg" width="20" height="20" alt=""><span>Search</span></div>
       <div class="f-menu">
@@ -376,6 +401,15 @@ img{display:block}
      </div>
     </div>
     <div class="startover" id="startOver"><button id="startOverBtn" type="button" aria-describedby="startOverDesc">Start over</button><span class="sr-only" id="startOverDesc">Resets Coffee Lab to 1 ruby and empties your basket</span></div>
+    <div class="about-fab"><button id="aboutBtn" type="button" aria-expanded="false" aria-controls="aboutSheet">About</button></div>
+    <div class="about-sheet" id="aboutSheet" role="dialog" aria-labelledby="aboutSheetTitle" hidden>
+      <button class="x" id="aboutClose" type="button" aria-label="Close">×</button>
+      <h2 id="aboutSheetTitle">About this prototype</h2>
+      <p>A static, dependency-free HTML prototype of the Rubies loyalty flow: earn a ruby with every order from a store, see your progress, and unlock a coupon.</p>
+      <p><strong>Flow:</strong> Home ("Your Rubies and coupons" cards) → Food, coffee → Coffee Lab store (stamp card, tap an item to add it) → Order (payment) → Order status (the stamp card drops in, a new ruby stamp lands with a burst, then the map and pin appear). Each order adds one ruby; after the 4th ruby the demo ends and a Start over button resets it.</p>
+  <p><strong>How to try it:</strong> the delivery address is <strong>Sevastias 1</strong>. Tap <strong>Food,coffee</strong> in the nav bar to find <strong>Coffee Lab</strong>.</p>
+  <p><strong>Reset:</strong> press Cmd + R (Ctrl + R on Windows) to reload and start again from Home.</p>
+    </div>
     <p class="sr-only" id="srStatus" role="status" aria-live="polite"></p>
     <nav class="f-nav"><button class="on"><span class="ni"><img src="assets/fig/nav-discover-active.svg" width="21" height="24" alt=""></span>Discover</button><button data-go="food"><span class="ni"><img src="assets/fig/nav-cutlery.svg" width="17.875" height="22" alt=""></span>Food,coffee</button><button><span class="ni"><img src="assets/fig/nav-carrot.svg" width="20.985" height="22" alt=""></span>Supermarkets</button><button><span class="ni"><img src="assets/fig/nav-shops.svg" width="21" height="24" alt=""></span>Shops</button></nav>
   </section>
@@ -385,7 +419,7 @@ img{display:block}
     <img class="statusbar" src="assets/fig/statusbar.svg" alt="">
     <div class="scroll" style="padding-top:64px;padding-bottom:99px">
      <div style="display:flex;flex-direction:column;gap:16px">
-      <div class="f-header"><div style="display:flex;flex-direction:column;gap:2px"><div class="f-title">Food,coffee</div><div class="f-addr">Address <img src="assets/fig/chevron-down.svg" width="14" height="14" alt=""></div></div>
+      <div class="f-header"><div style="display:flex;flex-direction:column;gap:2px"><div class="f-title">Food,coffee</div><div class="f-addr">Sevastias 1 <img src="assets/fig/chevron-down.svg" width="14" height="14" alt=""></div></div>
         <div class="f-iconbtns"><span class="f-iconbtn"><span class="ic"><img src="assets/fig/icon-basket.svg" width="24" height="24" alt="Basket" style="inset:0"></span></span><span class="f-iconbtn"><span class="ic"><img src="assets/fig/icon-user.svg" width="18" height="20" alt="Profile" style="left:3px;top:2px"></span></span><span class="f-notif">1</span></div></div>
       <div class="f-search"><img src="assets/fig/search.svg" width="20" height="20" alt=""><span>Search</span></div>
       <div class="f-menu"><button class="f-mitem"><span class="ph"><span class="im"><img src="assets/fig/cat-coffee.png" alt="" style="object-fit:cover;left:50%;transform:translateX(-50%);top:0;bottom:0;aspect-ratio:160/159;height:100%"></span></span><p>Coffee</p></button><button class="f-mitem"><span class="ph"><span class="im"><img src="assets/fig/cat-souvlaki.png" alt="" style="object-fit:cover;left:0;right:0;top:50%;transform:translateY(-50%);aspect-ratio:1;width:100%"></span></span><p>Souvlakia</p></button><button class="f-mitem"><span class="ph"><span class="im"><img src="assets/fig/cat-pizza.png" alt="" style="object-fit:cover;left:0;right:0;top:50%;transform:translateY(-50%);aspect-ratio:1;width:100%"></span></span><p>Pizza</p></button><button class="f-mitem"><span class="ph"><span class="im"><img src="assets/fig/cat-brunch.png" alt="" style="object-fit:cover;left:50%;transform:translateX(-50%);top:0;bottom:0;aspect-ratio:160/159;height:100%"></span></span><p>Brunch</p></button><button class="f-mitem"><span class="ph"><span class="im"><img src="assets/fig/cat-crepes.png" alt="" style="object-fit:cover;left:50%;transform:translateX(-50%);top:0;bottom:0;aspect-ratio:1;height:100%"></span></span><p>Crepes</p></button><button class="f-mitem"><span class="ph"><span class="im"><img src="assets/fig/cat-homemade.png" alt="" style="object-fit:cover;left:0;right:0;top:50%;transform:translateY(-50%);aspect-ratio:1;width:100%"></span></span><p>Homemade food</p></button></div>
@@ -473,7 +507,6 @@ img{display:block}
   </section>
 
 </div>
-<div class="hint">Interactive prototype · Address: Sevastias 1 · Tap Food,coffee in the nav bar to find Coffee Lab → + → View order → Send Order → watch the status animation<br>Press Cmd + R (Ctrl + R on Windows) to reset the prototype and start again</div>
 
 <script>
 /* ---------- data ---------- */
@@ -677,7 +710,7 @@ function go(id,dir){
   else {next.classList.add('left'); void next.offsetWidth; next.classList.remove('left');}
   next.classList.add('active');
   setTimeout(()=>{if(prev&&current!==prev.id){prev.style.transform='';prev.classList.remove('left')}},320);
-  current=id;
+  current=id; document.getElementById('phone').dataset.screen=id; if(id!=='home')toggleAbout(false);
   const sc=next.querySelector('.scroll'); if(sc&&!back&&id!=='food')sc.scrollTop=0;
   if(id==='status'){ordered=true;coffeeRubies=prepStatusCard();renderRubies();playStatus();Object.keys(cart).forEach(k=>delete cart[k]);refreshCart();} // order placed: empty the basket and menu selections for the next visit
   if(id==='store'){const r=document.getElementById('storeRubies');r.classList.remove('show');void r.offsetWidth;setTimeout(()=>r.classList.add('show'),380);} // Coffee Lab already has 1 ruby, so the card shows on every visit
@@ -712,6 +745,15 @@ function startOver(){
   announce('Demo restarted. Coffee Lab has 1 ruby and your basket is empty.');
   document.getElementById('coffeeCard').focus({preventScroll:true}); // the button disappears, so keep focus somewhere useful
 }
+/* ---------- About button + sheet (phones and narrow windows) ---------- */
+function toggleAbout(open){const s=document.getElementById('aboutSheet'),b=document.getElementById('aboutBtn');if(!s)return;
+  if(open===undefined)open=s.hidden; if(open===!s.hidden)return;
+  s.hidden=!open; b.setAttribute('aria-expanded',open);
+  (open?document.getElementById('aboutClose'):b).focus({preventScroll:true});}
+document.getElementById('aboutBtn').addEventListener('click',e=>{e.stopPropagation();toggleAbout();});
+document.getElementById('aboutClose').addEventListener('click',e=>{e.stopPropagation();toggleAbout(false);});
+document.getElementById('aboutSheet').addEventListener('click',e=>e.stopPropagation());
+document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!document.getElementById('aboutSheet').hidden)toggleAbout(false);});
 refreshCart();
 // Reloading the page (Cmd/Ctrl + R, F5) always restarts the demo from Home; a fresh link with #screen still opens that screen.
 const navType=(performance.getEntriesByType('navigation')[0]||{}).type;
