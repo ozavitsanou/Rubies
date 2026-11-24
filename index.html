@@ -356,7 +356,6 @@ body{position:relative}
   <h2 id="aboutSideTitle">About this prototype</h2>
   <p>A static, dependency-free HTML prototype of the Rubies loyalty flow: earn a ruby with every order from a store, see your progress, and unlock a coupon.</p>
   <p><strong>Flow:</strong> Home ("Your Rubies and coupons" cards) → Food, coffee → Coffee Lab store (stamp card, tap an item to add it) → Order (payment) → Order status (the stamp card drops in, a new ruby stamp lands with a burst, then the map and pin appear). Each order adds one ruby; after the 4th ruby the demo ends and a Start over button resets it.</p>
-  <p><strong>How to try it:</strong> the delivery address is <strong>Sevastias 1</strong>. Tap <strong>Food,coffee</strong> in the nav bar to find <strong>Coffee Lab</strong>.</p>
   <p><strong>Reset:</strong> press Cmd + R (Ctrl + R on Windows) to reload and start again from Home.</p>
 </aside>
 <div class="phone" id="phone">
@@ -407,7 +406,6 @@ body{position:relative}
       <h2 id="aboutSheetTitle">About this prototype</h2>
       <p>A static, dependency-free HTML prototype of the Rubies loyalty flow: earn a ruby with every order from a store, see your progress, and unlock a coupon.</p>
       <p><strong>Flow:</strong> Home ("Your Rubies and coupons" cards) → Food, coffee → Coffee Lab store (stamp card, tap an item to add it) → Order (payment) → Order status (the stamp card drops in, a new ruby stamp lands with a burst, then the map and pin appear). Each order adds one ruby; after the 4th ruby the demo ends and a Start over button resets it.</p>
-  <p><strong>How to try it:</strong> the delivery address is <strong>Sevastias 1</strong>. Tap <strong>Food,coffee</strong> in the nav bar to find <strong>Coffee Lab</strong>.</p>
   <p><strong>Reset:</strong> press Cmd + R (Ctrl + R on Windows) to reload and start again from Home.</p>
     </div>
     <p class="sr-only" id="srStatus" role="status" aria-live="polite"></p>
@@ -498,7 +496,7 @@ body{position:relative}
             <div class="blk"><span id="st1">Waiting for order confirmation</span><span id="st2" style="opacity:0">Your order has been confirmed</span><span id="st3" style="opacity:0">Delivering your order soon</span></div></div>
             <div class="dv"></div><div class="fr"><div><img src="assets/fig/banner-pro.png" alt="Unlimited free delivery – be a pro"></div><div><img class="ad" src="assets/fig/ad-fixers.jpg" alt="The Fixers" style="height:125.08%;width:100%;left:-.21%;top:-14.2%"></div><div><img class="ad" src="assets/fig/ad-lego.jpg" alt="LEGO" style="height:125.08%;width:100%;left:0;top:0;object-fit:cover"></div></div></div>
         </div>
-        <div class="rw-large layer a" id="aCard" role="img" aria-label="A little thank-you from Coffee Lab: your first ruby, 1/5"><p id="aCardTitle">A little thank-you from Coffee Lab: your first ruby, 1/5</p><div class="rowWrap" style="position:relative"><div class="row" id="aCardRow"></div><div id="aStampLayer" style="position:absolute;left:0;top:0;width:0;height:0"><span class="st-slot layer a" id="aPh" style="position:absolute;left:0;top:0;z-index:5"><img src="assets/fig/stamp-placeholder.svg" alt=""><span class="num" id="aPhNum">2</span></span><img class="layer a" id="aStamp" src="assets/fig/stamp-ruby-30.svg" style="left:0;top:0;width:30px;height:30px;z-index:6" alt=""><div id="crystals"></div><img class="layer a" id="aSpark" src="assets/fig/spark.svg" alt="" style="left:13.4px;top:8.8px;width:10px;height:10px;z-index:8"></div></div><p class="c" id="aCardNote">Collect 4 more by 30/11 and 2 euro coupon is yours.</p><div class="rw-glow" aria-hidden="true"><img src="assets/fig/card-glow-ellipse.svg" alt="" style="left:-354.9px;top:-25.9px;width:523.8px;height:565.8px"></div></div>
+        <div class="rw-large layer a" id="aCard" role="img" aria-label="A little thank-you from Coffee Lab: your first ruby, 1/5"><p id="aCardTitle">A little thank-you from Coffee Lab: your first ruby, 1/5</p><div class="rowWrap" style="position:relative"><div class="row" id="aCardRow"></div><div id="aStampLayer" style="position:absolute;left:0;top:0;width:30px;height:30px"><span class="st-slot layer a" id="aPh" style="position:absolute;left:0;top:0;z-index:5"><img src="assets/fig/stamp-placeholder.svg" alt=""><span class="num" id="aPhNum">2</span></span><img class="layer a" id="aStamp" src="assets/fig/stamp-ruby-30.svg" style="left:0;top:0;width:30px;height:30px;z-index:6" alt=""><div id="crystals"></div><img class="layer a" id="aSpark" src="assets/fig/spark.svg" alt="" style="left:13.4px;top:8.8px;width:10px;height:10px;z-index:8"></div></div><p class="c" id="aCardNote">Collect 4 more by 30/11 and 2 euro coupon is yours.</p><div class="rw-glow" aria-hidden="true"><img src="assets/fig/card-glow-ellipse.svg" alt="" style="left:-354.9px;top:-25.9px;width:523.8px;height:565.8px"></div></div>
         
         
         
@@ -636,8 +634,10 @@ holdShift=false; // the spark keeps its own timing (fades just before the hold)
 track(spark,'opacity',[[7.35,0,C],[7.43,1,'EASE_OUT'],[7.95,1,C],[8.1,0,'EASE_OUT']],v=>v);
 track(spark,'scale',[[7.35,.1,C],[7.6,2,'EASE_OUT'],[7.95,1,'EASE_IN_AND_OUT']],v=>v);
 holdShift=true;
-function playStatus(){anims.forEach(a=>{a.currentTime=0;a.play();});}
-function resetStatus(){anims.forEach(a=>{a.pause();a.currentTime=0;});}
+let stampFix=0; // safety net for iPhone Safari: once the stamp has landed, a static stamp also fills the slot in the row
+function fillStampSlot(){const slot=document.getElementById('aCardRow').children[stampSlot]; if(slot&&!slot.querySelector('img'))slot.innerHTML='<img src="assets/fig/stamp-ruby-30.svg" alt="Ruby collected">';}
+function playStatus(){clearTimeout(stampFix);anims.forEach(a=>{a.currentTime=0;a.play();});stampFix=setTimeout(fillStampSlot,6150);}
+function resetStatus(){clearTimeout(stampFix);anims.forEach(a=>{a.pause();a.currentTime=0;});}
 
 
 /* ---------- rubies state: Coffee Lab starts with 1 of 5; every order stamps one more ---------- */
