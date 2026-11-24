@@ -1,0 +1,741 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Order a coffee – interactive prototype</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+<style>
+/* ===== Design tokens – mirrored 1:1 from the Figma "Mapped" variable collection ===== */
+:root{
+  /* colour (semantic) */
+  --surface-default:#ffffff;
+  --surface-subtle:#f4f4f4;
+  --surface-muted:#f7f7f7;
+  --surface-control:#e1e1e1;
+  --surface-image-placeholder:#b2b2b8;
+  --surface-logo-placeholder:#dbdbdb;
+  --text-strong:#1e1e1e;
+  --text-primary:#1a1a1a;
+  --text-secondary:#737373;
+  --text-tertiary:#666666;
+  --text-placeholder:#b3b3b3;
+  --text-inverse:#ffffff;
+  --icon-default:#000000;
+  --icon-muted:#9b9b9b;
+  --nav-inactive:#6b6b73;
+  --border-subtle:#ededed;
+  --border-default:#d6d6d6;
+  --border-divider:#e0e0e0;
+  --brand-primary:#e31f29;
+  --brand-subtle:#ffebeb;
+  --rating-default:#12b280;
+  --action-primary:#2c2c2c;
+  /* typography */
+  --font-family:'Roboto',system-ui,-apple-system,'Segoe UI',sans-serif;
+  --font-weight-regular:400;
+  --font-weight-bold:700;
+  --font-size-s1:12px; --line-height-s1:18px;
+  --font-size-s2:14px; --line-height-s2:21px;
+  --font-size-s3:16px; --line-height-s3:24px;
+  --font-size-s4:18px; --line-height-s4:27px;
+  --font-size-s5:24px; --line-height-s5:36px;
+  --font-size-s6:32px; --line-height-s6:48px;
+  --font-size-s7:40px; --line-height-s7:60px;
+  --font-size-s8:48px; --line-height-s8:72px;
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html,body{height:100%}
+body{font-family:var(--font-family);font-weight:var(--font-weight-regular);color:var(--text-primary);background:#e9e9ec;display:flex;align-items:center;justify-content:center;min-height:100vh}
+button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
+img{display:block}
+/* type scale utilities (s1..s8, regular + bold) */
+.s1{font-size:var(--font-size-s1);line-height:var(--line-height-s1)}
+.s2{font-size:var(--font-size-s2);line-height:var(--line-height-s2)}
+.s3{font-size:var(--font-size-s3);line-height:var(--line-height-s3)}
+.s4{font-size:var(--font-size-s4);line-height:var(--line-height-s4)}
+.s5{font-size:var(--font-size-s5);line-height:var(--line-height-s5)}
+.s6{font-size:var(--font-size-s6);line-height:var(--line-height-s6)}
+.b{font-weight:var(--font-weight-bold)}
+.strong{color:var(--text-strong)} .sec{color:var(--text-secondary)} .inv{color:var(--text-inverse)} .good{color:var(--rating-default)}
+
+/* ===== phone ===== */
+.phone{position:relative;width:375px;height:812px;background:var(--surface-default);overflow:hidden;overflow:clip;border-radius:44px;box-shadow:0 20px 60px rgba(0,0,0,.25),0 0 0 10px #111}
+@media (max-width:430px){body{background:var(--surface-default)}.phone{border-radius:0;box-shadow:none;width:100vw;height:100dvh;max-width:430px}}
+.screen{position:absolute;inset:0;background:var(--surface-default);transform:translateX(100%);transition:transform .3s cubic-bezier(.2,.7,.2,1),opacity .3s;visibility:hidden}
+.screen.active{transform:none;visibility:visible;z-index:2}
+.screen.left{transform:translateX(-30%);visibility:visible;z-index:1;opacity:.6}
+.screen.fade{transition:opacity .5s}
+.scroll{position:absolute;inset:0;overflow-y:auto;overflow-x:hidden;scrollbar-width:none}
+.scroll::-webkit-scrollbar{display:none}
+.statusbar{position:absolute;top:0;left:0;width:100%;height:62px;z-index:5;pointer-events:none;background:var(--surface-default)}
+.statusbar.clear{background:none}
+.bottomnav{position:absolute;left:0;bottom:0;width:100%;height:83px;z-index:5;background:var(--surface-default)}
+.bottomnav img{width:100%;height:83px}
+.bottomnav .hit{position:absolute;top:0;height:100%;width:25%}
+
+/* generic bits */
+.pad{padding:0 16px}
+.hdr{display:flex;align-items:center;justify-content:space-between;padding:6px 16px;height:56px}
+.circle{width:32px;height:32px;border-radius:50%;background:var(--surface-subtle);display:flex;align-items:center;justify-content:center;position:relative}
+.circle .dot{position:absolute;top:-3px;right:-3px;background:var(--rating-default);color:#fff;font-size:10px;line-height:14px;width:14px;height:14px;border-radius:50%;text-align:center}
+.search{margin:8px 16px;height:48px;border-radius:8px;background:var(--surface-subtle);display:flex;align-items:center;gap:10px;padding:0 14px;color:var(--text-secondary)}
+.row{display:flex;align-items:center}
+.sec-title{display:flex;align-items:center;justify-content:space-between;padding:16px 16px 8px}
+.hscroll{display:flex;gap:12px;overflow-x:auto;padding:0 16px 8px;scrollbar-width:none}
+.hscroll::-webkit-scrollbar{display:none}
+.clip-x{overflow:hidden;margin:0 16px;border-radius:8px}
+.clip-x img{max-width:none}
+.pill{display:inline-block;border-radius:6px;padding:1px 6px;font-size:11px;line-height:16px;font-weight:700}
+.pro{background:#c40000;color:#fff;border-radius:3px;padding:0 4px;font-style:italic;font-size:10px;line-height:13px}
+.deal{background:var(--brand-subtle);color:var(--brand-primary)}
+
+/* simple card (home) */
+.card{flex:0 0 250px;border-radius:12px;background:var(--surface-default);box-shadow:0 1px 6px rgba(0,0,0,.14);overflow:hidden;text-align:left;cursor:pointer}
+.card .cover{height:150px;background-size:cover;background-position:center;position:relative}
+.card .badge{position:absolute;right:0;bottom:0;background:#fff;border-radius:8px 0 0 0;padding:4px 8px;font-size:11px;display:flex;gap:4px;align-items:center}
+.card .info{padding:12px}
+.rating{display:flex;align-items:center;gap:4px}
+.proTile{flex:0 0 143px;border-radius:12px;background:linear-gradient(160deg,#e80000,#b80000);color:#fff;display:flex;flex-direction:column;justify-content:space-between;padding:16px}
+
+/* mini row (food list) */
+.mini{display:flex;gap:12px;padding:14px 16px;border-bottom:1px solid var(--border-divider);cursor:pointer;text-align:left;width:100%}
+.mini .logo{width:40px;height:40px;border-radius:50%;object-fit:cover;flex:none}
+.mini .meta{display:flex;flex-direction:column;gap:3px}
+/* store */
+.hero{height:208px;background-size:cover;background-position:center;position:relative}
+.hero .acts{position:absolute;top:62px;left:0;right:0;display:flex;justify-content:space-between;padding:0 16px;z-index:6}
+.hero .acts .circle{background:#fff;width:32px;height:32px}
+.sheet{position:relative;margin-top:-16px;background:#fff;border-radius:16px 16px 0 0;padding:16px 16px 0}
+/* Menu Item (Figma component 41:574) */
+#menuList{margin:0 -16px}
+.item{position:relative;display:flex;align-items:flex-start;background:var(--surface-default);border-bottom:1px solid var(--border-subtle);padding-bottom:8px;text-align:left;cursor:pointer}
+.item .txt{flex:1;min-width:0;display:flex;flex-direction:column;gap:6px;padding:8px 8px 8px 16px}
+.item .nm{font:700 15px/normal var(--font-family);color:var(--text-primary)}
+.item .ds{font:400 12px/normal var(--font-family);color:var(--text-secondary)}
+.item .pr{font:700 13px/normal var(--font-family);color:var(--text-primary)}
+.item .ph{flex:none;width:132px;padding:8px 16px 8px 8px}
+.item .ph img{display:block;width:108px;height:88px;border-radius:8px;object-fit:cover}
+.plus{position:absolute;right:7px;top:75px;display:flex;align-items:center;gap:6px;padding:8px;border-radius:4px;background:var(--surface-muted);border:0;cursor:pointer;font:700 13px/16px var(--font-family);color:var(--text-primary)}
+.plus img{width:16px;height:16px;display:block}
+.plus .chev{width:9px;height:9px}
+.plus.on{background:var(--text-primary);color:var(--text-inverse)}
+.plus.on .chev{filter:brightness(0) invert(1)}
+.ichev{display:inline-block;width:10px;height:10px;vertical-align:middle;margin-left:3px}
+.qty .ichev{width:9px;height:9px}
+.ichev.r{transform:scaleX(-1)}
+.cta-wrap{position:absolute;left:0;right:0;bottom:0;background:#fff;border-top:1px solid var(--border-divider);padding:12px 16px 28px;z-index:6;transform:translateY(110%);transition:transform .25s}
+.cta-wrap.show{transform:none}
+.cta{width:100%;display:flex;align-items:center;justify-content:space-between;background:var(--rating-default);color:#fff;border-radius:8px;padding:14px;font-weight:700;font-size:16px}
+.cta .count{background:#fff;color:var(--text-primary);border-radius:6px;padding:3px 8px;font-size:14px}
+.cta.dark{background:var(--action-primary);justify-content:center}
+/* order */
+.back{padding:8px 12px;height:36px}
+.card2{border:1.5px solid var(--border-divider);border-radius:12px;padding:10px 12px;display:flex;align-items:center;gap:12px;text-align:left;background:#fff}
+.map{width:52px;height:52px;border-radius:8px;background:var(--surface-subtle);position:relative;overflow:hidden;flex:none}
+.map i{position:absolute;background:#fff}
+.map b{position:absolute;left:19px;top:14px;width:14px;height:14px;border-radius:50%;background:var(--brand-primary)}
+.map u{position:absolute;left:25px;top:26px;width:2px;height:12px;background:var(--brand-primary)}
+.oi{display:flex;gap:12px;align-items:center;padding:12px 0;border-bottom:1px solid var(--border-divider)}
+.qty{background:var(--surface-subtle);border-radius:6px;padding:8px 10px;font-weight:700;font-size:14px}
+.oi img{width:69px;height:55px;border-radius:8px;object-fit:cover}
+.fee{display:flex;align-items:center;gap:12px;padding:10px 0}
+.fee .ic{width:32px;height:32px;border-radius:6px;background:var(--surface-subtle);display:flex;align-items:center;justify-content:center}
+.fee .t{flex:1;text-align:left}
+/* receipt */
+.rcard{background:var(--surface-subtle);border-radius:12px;padding:16px;display:flex;flex-direction:column;gap:12px;margin:0 16px}
+.rcard hr{border:0;border-top:1px solid var(--border-divider)}
+.line{display:flex;justify-content:space-between}
+.ruby{margin:16px;background:var(--brand-subtle);border-radius:12px;padding:14px 16px;display:flex;gap:12px;align-items:center}
+.tick{width:56px;height:56px;border-radius:50%;background:var(--rating-default);display:flex;align-items:center;justify-content:center;margin:8px auto}
+
+/* status screen layers */
+.stage{position:relative;width:375px;height:812px;overflow:hidden}
+.heroBox{position:absolute;left:0;top:0;width:375px;height:284px;background:#ef7c77;overflow:hidden}
+.heroBox img{display:block;transform-origin:50% 50%}
+.layer{position:absolute;display:block;max-width:none}
+.layer.a{will-change:transform,opacity}
+.stage .statusbar{z-index:7}
+.mapPulse{position:absolute;width:37px;height:37px;border-radius:50%;background:rgba(255,0,0,.26);animation:mapPulse 1.6s ease-out infinite}
+@keyframes mapPulse{0%{transform:scale(.7);opacity:1}70%{transform:scale(1.6);opacity:0}100%{transform:scale(1.6);opacity:0}}
+@media (prefers-reduced-motion:reduce){.mapPulse{animation:none}}
+.sheetCover{position:absolute;left:0;top:0;width:375px;height:812px;background:#fff;z-index:2;clip-path:inset(254px 0 0 0 round 24px 24px 0 0)}
+.sbwhite{position:absolute;left:0;top:0;width:375px;height:62px;z-index:6;background:#fff;opacity:0;pointer-events:none}
+.stext{position:absolute;left:0;top:332px;width:375px;height:26px;background:#fff;z-index:4;font:500 16px/26px var(--font-family,Roboto,sans-serif);color:#000;padding-left:16px;box-sizing:border-box}
+.stext span{position:absolute;left:16px;top:0;white-space:nowrap}
+.under{position:absolute;left:0;top:371px;width:375px;height:441px;background:#efefef;z-index:3;opacity:0}
+.under i{position:absolute;left:0;top:21px;right:0;bottom:0;background:#fff;border-radius:16px 16px 0 0}
+.pressable{display:block;width:100%;border:0;background:none;padding:0;cursor:pointer;transition:transform .15s,filter .15s;-webkit-tap-highlight-color:transparent}
+.pressable:active{transform:scale(.96);filter:brightness(.96)}
+.pressable img{display:block}
+#storeRubies{margin:12px 0 8px;display:none}
+#storeRubies.show{display:block;animation:popIn .5s cubic-bezier(.3,1.5,.5,1) both}
+#storeRubies.pulse img{animation:pulse .5s ease}
+#storeRubies{touch-action:none;will-change:transform}
+#storeRubies.spring{transition:transform .6s cubic-bezier(.25,1.8,.45,1)}
+#storeRubies.hov{transition:transform .25s ease-out}
+/* comic shine: hard-edged double glint sweeping left → right across the mini ruby card */
+#storeRubies .rw-mini{position:relative}
+#storeRubies.shaking .rw-mini{animation:dragShake .14s linear infinite} /* little shake while the card is dragged */
+@keyframes dragShake{0%,100%{transform:rotate(0)}25%{transform:translate(1px,-.5px) rotate(1.4deg)}75%{transform:translate(-1px,.5px) rotate(-1.4deg)}}
+@media (prefers-reduced-motion:reduce){#storeRubies.shaking .rw-mini{animation:none}}
+#storeRubies .rw-mini::after{content:"";position:absolute;top:-20%;bottom:-20%;left:0;width:70px;pointer-events:none;z-index:5;transform:translateX(-140px) skewX(-22deg);
+  background:linear-gradient(90deg,transparent 0 10px,rgba(255,255,255,.95) 10px 34px,transparent 34px 44px,rgba(255,255,255,.95) 44px 52px,transparent 52px)}
+#storeRubies.show .rw-mini::after{animation:comicShine 3.4s cubic-bezier(.55,0,.25,1) .55s infinite}
+@keyframes comicShine{0%{transform:translateX(-140px) skewX(-22deg)}28%{transform:translateX(420px) skewX(-22deg)}100%{transform:translateX(420px) skewX(-22deg)}}
+@media (prefers-reduced-motion:reduce){#storeRubies.show .rw-mini::after{animation:none}}
+@keyframes popIn{from{opacity:0;transform:translateY(-10px) scale(.94)}to{opacity:1;transform:none}}
+@keyframes pulse{0%{transform:scale(1)}40%{transform:scale(1.04)}100%{transform:scale(1)}}
+#homeRubies{position:relative;width:375px;height:219px;margin-top:8px}
+#homeRubies>img{position:absolute;left:0;top:0;display:block}
+#homeRubies .hscroll.rc{position:absolute;left:0;top:78px;width:375px;height:129px;padding:0 13px;gap:10px;box-sizing:border-box}
+#homeRubies .rc button{flex:0 0 auto;border:0;padding:0;background:none;cursor:pointer}
+#homeRubies .rc img{display:block;width:215px;height:129px}
+.hscroll{cursor:grab}.hscroll.dragging{cursor:grabbing;scroll-snap-type:none}
+/* ===== Figma component library (exploration file) ===== */
+:root{--sds-text-default:#1e1e1e;--sds-text-neutral-secondary:#5a5a5a;--sds-font:'Inter',var(--font-family);--neutral-0f:#0f0f0f;--neutral-d8:#d8d8d8;--green:#00b485}
+.f-header{display:flex;height:56px;align-items:center;justify-content:space-between;padding:8px 16px}
+.f-addr{display:flex;gap:8px;align-items:center;font:400 14px/1.4 var(--sds-font);color:var(--sds-text-default)}
+.f-title{font:600 24px/1.2 var(--sds-font);letter-spacing:-.48px;color:var(--sds-text-default)}
+.f-iconbtns{display:flex;gap:9px;align-items:center;padding:2px 0;position:relative}
+.f-iconbtn{background:var(--surface-control);border-radius:24px;padding:6px;display:flex;align-items:center;position:relative}
+.f-iconbtn .ic{width:24px;height:24px;position:relative}
+.f-iconbtn .ic img{position:absolute}
+.f-notif{position:absolute;left:21px;top:-6px;background:var(--green);border-radius:11px;padding:2px 5px;font:700 12px/12px 'Ubuntu Sans',var(--font-family);color:#f5f5f5}
+.f-search{margin:0 16px;background:var(--surface-subtle);opacity:.7;display:flex;gap:11px;align-items:center;padding:14px;border-radius:8px}
+.f-search span{font:400 14px/1.1 var(--sds-font);color:var(--sds-text-neutral-secondary)}
+.f-menu{display:flex;gap:8px;align-items:center;padding:0 16px;overflow-x:auto;scrollbar-width:none}
+.f-menu::-webkit-scrollbar{display:none}
+.f-mitem{display:flex;flex-direction:column;gap:8px;align-items:center;flex:none;background:none;border:0;cursor:pointer}
+.f-mitem .ph{display:block;padding:0 8px}.f-mitem .im{display:block;width:66px;height:60px;position:relative;overflow:hidden}
+.f-mitem .im img{position:absolute;max-width:none}
+.f-mitem p{font:400 11px/1.1 var(--sds-font);color:var(--sds-text-neutral-secondary);text-align:center;white-space:nowrap}
+.f-banner{margin:0 16px;height:170px;border-radius:8px;overflow:hidden;position:relative}
+.f-banner .bi{position:absolute;left:0;right:0;top:50%;transform:translateY(-50%);aspect-ratio:562/312;border-radius:12px;overflow:hidden}
+.f-banner .bi img{position:absolute;max-width:none;height:105.77%;left:-1.42%;top:-2.88%;width:103.2%}
+.f-banner .pager{position:absolute;left:149px;top:148px;width:54px;height:14px}
+.f-sec{display:flex;flex-direction:column;gap:8px;padding:0 16px}
+.f-sechdr{display:flex;align-items:flex-start;justify-content:space-between;padding:8px 0}
+.f-sechdr .t{font:600 16px/1.4 var(--sds-font);color:var(--sds-text-default)}
+.f-sechdr .l{display:flex;gap:8px;align-items:center;padding:6px 0;font:400 14px/1.4 var(--sds-font);color:var(--sds-text-default)}
+.f-shops{display:flex;gap:16px;align-items:flex-start;overflow-x:auto;scrollbar-width:none;margin:0 -16px;padding:0 16px 8px}
+.f-shops::-webkit-scrollbar{display:none}
+.f-shop{flex:0 0 250px;background:#fff;border-radius:8px;overflow:hidden;box-shadow:0 4px 4px -1px rgba(12,12,13,.1),0 4px 4px -1px rgba(12,12,13,.05);text-align:left;border:0;padding:0;cursor:pointer}
+.f-shop .cv{height:150px;position:relative;overflow:hidden}
+.f-shop .cv>img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.f-shop .badge{position:absolute;right:0;top:124px;background:#fff;display:flex;gap:4px;align-items:center;padding:4px 8px;border-radius:6px 6px 0 0;font:400 11px/normal var(--font-family);color:var(--text-primary)}
+.f-shop .badge b{font-weight:500}
+.f-shop .info{padding:8px 10px 10px;display:flex;flex-direction:column;gap:6px}
+.f-shop .nm{font:700 14px/normal var(--font-family);color:var(--text-primary);white-space:nowrap}
+.f-shop .rt{display:flex;gap:4px;align-items:center;white-space:nowrap}
+.f-shop .rt .v{font:700 14px/normal var(--font-family);color:var(--rating-default)}
+.f-shop .rt .c{font:400 10px/normal var(--font-family);color:var(--text-secondary)}
+.f-shop .rt .k{font:700 11px/normal var(--font-family);color:var(--text-secondary)}
+.f-shop .mt{font:400 11px/normal var(--font-family);color:var(--text-secondary);white-space:nowrap}
+.f-tile{flex:0 0 143px;height:225px;border-radius:8px;overflow:hidden;position:relative;filter:drop-shadow(0 4px 2px rgba(12,12,13,.1)) drop-shadow(0 4px 2px rgba(12,12,13,.05))}
+.f-tile img{position:absolute;top:0;height:100%;left:50%;transform:translateX(-50%);max-width:none}
+/* Your Rubies and coupons (181:7606) */
+.f-rubies{padding:8px 0 0;width:374px}
+.f-rubies .sec{background:#f4f4f4;height:211px;border-radius:12px;padding:16px 16px 24px;display:flex;flex-direction:column;gap:16px;position:relative;isolation:isolate}
+.f-rubies .hd{display:flex;justify-content:space-between;padding:8px 0;position:relative;z-index:3}
+.f-rubies .hd p{font:600 16px/1.4 var(--sds-font);color:var(--sds-text-default)}
+.f-rubies .gems{position:absolute;left:273px;top:-33px;width:73.11px;height:71px}
+.f-rubies .car{display:flex;gap:16px;align-items:center;position:relative;z-index:2;overflow-x:auto;overflow-y:hidden;overscroll-behavior-y:none;touch-action:pan-x pan-y;scrollbar-width:none;margin:-6px -16px -6px;padding:6px 16px 12px;flex:none}
+.f-rubies .car::-webkit-scrollbar{display:none}
+.f-rubies .grad{position:absolute;inset:0;width:376px;border-radius:8px;overflow:hidden;z-index:1;pointer-events:none}
+.f-rubies .grad img{position:absolute;max-width:none}
+.rc{flex:0 0 209px;display:flex;flex-direction:column;filter:drop-shadow(0 4px 2px rgba(12,12,13,.1)) drop-shadow(0 4px 2px rgba(12,12,13,.05));border:0;padding:0;background:none;text-align:left;cursor:pointer}
+.rc.stamp{background:linear-gradient(180deg,#ffefef 57.541%,#fff);border-radius:12px} /* Figma .Rewards-card/stamps */
+.rc .top{background:#fff;border-radius:12px;padding:12px 12px 8px;display:flex;gap:8px;align-items:flex-start}
+.rc.voucher .top{border-radius:12px 12px 8px 8px}
+.rc .top img{width:40px;height:40px;flex:none}
+.rc .inf{display:flex;flex-direction:column;font:400 12px/18px var(--font-family)}
+.rc .inf .n{font-weight:700;color:var(--text-primary)} .rc .inf .r{color:var(--rating-default)} .rc .inf .m{color:var(--text-secondary)}
+.rc .rubies{padding:12px;display:flex;justify-content:center}
+.rc .rubies .row{display:flex;gap:8px;padding:0 3px}
+.rc .rubies img{width:24px;height:24px}
+/* Figma .Ruby stamp (299:6577) + numbered placeholder slots, 30x30, gap 8 */
+.st-slot{position:relative;width:30px;height:30px;flex:none;display:block}
+.st-slot img,.rc .rubies .st-slot img,.rw-mini .row .st-slot img,.rw-large .row .st-slot img{position:absolute;left:0;top:0;width:30px;height:30px}
+.st-slot .num{position:absolute;left:10px;top:6px;font:700 16px/normal var(--font-family);color:#cbcbcb}
+.ruby-off{opacity:.5}
+/* end of flow: Coffee Lab card becomes the coupon and a "Start over" pill nudges a restart */
+.startover{position:absolute;left:0;right:0;bottom:92px;z-index:20;display:none;justify-content:center;pointer-events:none}
+.startover.show{display:flex;animation:soIn .5s cubic-bezier(.3,1.5,.5,1) both,soNudge 3.2s ease-in-out 1.2s 3} /* nudges 3 times then rests (no endless motion) */
+.startover.poke{animation:soPoke .45s ease-in-out}
+.startover button{pointer-events:auto;position:relative;isolation:isolate;display:flex;align-items:center;justify-content:center;gap:10px;width:167px;height:41px;padding:10px;border:0;border-radius:30px;cursor:pointer;
+  font:700 14px/21px Roboto,var(--font-family);letter-spacing:0;color:#000;text-transform:uppercase;
+  /* Figma 256:22976 · fill #8D21F2 50% + Glass (blur 4, refraction .8, depth 20, light -45°, intensity .8, dispersion .5) */
+  background:rgba(141,33,242,.5);-webkit-backdrop-filter:blur(4px) saturate(1.8) brightness(1.08);backdrop-filter:blur(4px) saturate(1.8) brightness(1.08);
+  box-shadow:inset 2px 2px 1px -1px rgba(255,255,255,.85),inset -2px -2px 1px -1px rgba(255,255,255,.45),inset 0 0 10px 1px rgba(255,255,255,.28),inset 0 -6px 12px -6px rgba(141,33,242,.45)}
+.startover button::before{content:"";position:absolute;inset:0;border-radius:inherit;padding:1px;z-index:-1;pointer-events:none; /* light rim: bright at the -45° light side, a hint of dispersion opposite */
+  background:linear-gradient(135deg,rgba(255,255,255,.95) 0%,rgba(255,255,255,.15) 35%,rgba(255,255,255,0) 55%,rgba(120,200,255,.35) 80%,rgba(255,150,230,.5) 100%);
+  -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask:linear-gradient(#000 0 0) content-box exclude,linear-gradient(#000 0 0)}
+.startover button::after{content:"";position:absolute;left:12%;right:12%;top:2px;height:45%;border-radius:30px 30px 60% 60%/30px 30px 100% 100%;z-index:-1;pointer-events:none;background:linear-gradient(180deg,rgba(255,255,255,.38),rgba(255,255,255,0))}
+@keyframes soIn{from{opacity:0;transform:translateY(16px) scale(.96)}to{opacity:1;transform:none}}
+@keyframes soNudge{0%,78%,100%{transform:none}84%{transform:translateX(-4px)}90%{transform:translateX(4px)}95%{transform:translateX(-2px)}}
+@keyframes soPoke{0%,100%{transform:none}20%{transform:translateX(-6px)}40%{transform:translateX(6px)}60%{transform:translateX(-4px)}80%{transform:translateX(3px)}}
+@media (prefers-reduced-motion:reduce){.startover.show,.startover.poke{animation:none}}
+.startover button:focus-visible{outline:3px solid #1a1a1a;outline-offset:3px} /* visible keyboard focus: dark ring + white gap reads on light and dark content */
+.startover button:focus-visible::after{box-shadow:none}
+.startover button:focus-visible{box-shadow:0 0 0 3px #fff,inset 2px 2px 1px -1px rgba(255,255,255,.85),inset -2px -2px 1px -1px rgba(255,255,255,.45),inset 0 0 10px 1px rgba(255,255,255,.28),inset 0 -6px 12px -6px rgba(141,33,242,.45)}
+.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0}
+
+/* rubies section stars: grow and shrink, staggered (Figma 181:7653 / 256:22928) */
+.f-rubies .grad img.twinkle{transform:rotate(15deg);animation:twinkle 3s ease-in-out .5s infinite}
+.f-rubies .grad img.twinkle.t2{animation-delay:2s}
+@keyframes twinkle{0%,27%,100%{transform:rotate(15deg) scale(1)}13%{transform:rotate(15deg) scale(1.5)}}
+@media (prefers-reduced-motion:reduce){.f-rubies .grad img.twinkle{animation:none}}
+
+.rc .vb{height:48px;position:relative;border-radius:12px}
+.rc .vb .bg{position:absolute;left:0;top:0;width:209px;height:48px}
+.rc .vb .st{position:absolute;mix-blend-mode:overlay}
+.rc .vb .w{position:absolute;left:0;right:0;top:calc(50% + 1px);transform:translateY(-50%);display:flex;align-items:center;justify-content:space-between;padding:12px}
+.rc .vb .claim{background:#f4f4f4;border-radius:28px;padding:2px 8px;font:400 12px/18px var(--font-family);color:var(--text-strong)}
+/* navigation (50:6157) */
+.f-nav{position:absolute;left:0;bottom:0;width:375px;display:flex;gap:2px;align-items:center;padding:0 8px 24px;background:#fff;border-top:1px solid var(--neutral-d8);box-shadow:inset 0 1px 4px rgba(12,12,13,.05);z-index:5}
+.f-nav button{width:88.25px;display:flex;flex-direction:column;gap:4px;align-items:center;padding:8px 12px;background:none;border:0;cursor:pointer;font:400 12px/normal var(--font-family);color:var(--nav-inactive);white-space:nowrap}
+.f-nav button.on{font-weight:700;color:var(--neutral-0f);padding:8px}
+.f-nav .ni{width:24px;height:24px;display:flex;align-items:center;justify-content:center}
+/* Rewards card · mini (136:7396) */
+.rw-mini{background:#fff;display:flex;align-items:center;gap:8px;padding:16px;border-radius:12px;width:100%;overflow:hidden;isolation:isolate;box-shadow:0 4px 4px -1px rgba(12,12,13,.05),0 4px 4px -1px rgba(12,12,13,.1);} /* Figma .Stamp-card/mini */
+.rw-mini .row{flex:1;display:flex;gap:8px}
+.rw-mini .tx{display:flex;flex-direction:column;gap:4px;height:31px;justify-content:center;text-align:right}
+.rw-mini .tx .a{font:500 12px/normal var(--font-family);color:var(--text-primary)}
+.rw-mini .tx .b{font:300 11px/normal var(--font-family);color:var(--text-tertiary)}
+/* Rewards card · large (216:18902) */
+/* Figma .Rewards-card glow: blurred ellipses (layer blur 125.9 → CSS blur 62.95px), MIN constraints, kept under text/rubies so text stays sharp */
+.rw-glow{position:absolute;inset:0;border-radius:inherit;overflow:hidden;pointer-events:none;z-index:0}
+.rw-glow i{position:absolute;border-radius:50%;filter:blur(62.95px)}
+.rw-glow .pink{background:#d799ce}.rw-glow .red{background:#ff473e}
+.rw-glow img{position:absolute;max-width:none} /* exported Figma ellipse (blur baked in) */
+.rw-mini>.row,.rw-mini>.tx,.rw-large>p,.rw-large>.rowWrap{position:relative;z-index:1} /* text + rubies stay crisp above the glow */
+.rw-large{position:absolute;left:16px;top:117px;width:343px;background:#fff;border-radius:12px;padding:16px;display:flex;flex-direction:column;gap:8px;z-index:5;opacity:0;isolation:isolate;box-shadow:0 4px 4px -1px rgba(12,12,13,.05),0 4px 4px -1px rgba(12,12,13,.1);} /* Figma .Stamp-card */
+.rw-large p{font:700 16px/normal var(--font-family);color:#dd1313}
+.rw-large p.c{font:400 11px/normal var(--font-family);color:var(--text-secondary)}
+.rw-large .row{display:flex;gap:8px}
+/* Info sheet (196:15294) */
+.info-sheet{position:absolute;left:0;top:254px;width:375px;height:558px;background:var(--surface-subtle);border-radius:16px 16px 0 0;overflow:hidden;display:flex;flex-direction:column;gap:10px}
+.info-sheet .nr{background:#fff;border-radius:16px;padding:16px;display:flex;flex-direction:column;gap:8px}
+.info-sheet .nr h2{font:700 22px/normal var(--font-family);color:var(--text-primary)}
+.info-sheet .stepper{display:flex;gap:12px;padding:8px 0}
+.info-sheet .stepper i{width:78px;height:8px;border-radius:4px;background:var(--surface-image-placeholder)}
+.info-sheet .stepper i:first-child{background:var(--rating-default)}
+.info-sheet .blk{position:relative;height:19px;font:700 16px/normal var(--font-family);color:var(--text-primary)}
+.info-sheet .blk span{position:absolute;left:0;top:0;white-space:nowrap}
+.info-sheet .dv{height:1px;background:var(--border-divider)}
+.info-sheet .fr{background:#fff;border-radius:16px;padding:16px;display:flex;flex-direction:column;gap:10px;flex:1}
+.info-sheet .fr div{aspect-ratio:418/152;border-radius:8px;overflow:hidden;position:relative}
+.info-sheet .fr img{position:absolute;max-width:none;height:102.63%;left:-.72%;top:-.66%;width:101.44%}
+/* flow hint */
+.hint{position:fixed;left:0;right:0;bottom:8px;text-align:center;color:#666;font-size:12px;pointer-events:none}
+@media (max-width:430px){.hint{display:none}}
+</style>
+</head>
+<body>
+<div class="phone" id="phone">
+
+  <!-- 1 · HOME  (Figma: Home v4 80:17435) -->
+  <section class="screen" id="home">
+    <img class="statusbar" src="assets/fig/statusbar.svg" alt="">
+    <div class="scroll" style="padding-top:70px;padding-bottom:100px">
+     <div style="display:flex;flex-direction:column;gap:16px">
+      <div class="f-header"><div style="display:flex;flex-direction:column;gap:2px"><div class="f-addr">Address <img src="assets/fig/chevron-down.svg" width="14" height="14" alt=""></div></div>
+        <div class="f-iconbtns"><span class="f-iconbtn"><span class="ic"><img src="assets/fig/icon-basket.svg" width="24" height="24" alt="Basket" style="inset:0"></span></span><span class="f-iconbtn"><span class="ic"><img src="assets/fig/icon-user.svg" width="18" height="20" alt="Profile" style="left:3px;top:2px"></span></span><span class="f-notif">1</span></div></div>
+      <div class="f-search"><img src="assets/fig/search.svg" width="20" height="20" alt=""><span>Search</span></div>
+      <div class="f-menu">
+        <button class="f-mitem" data-go="food"><span class="ph"><span class="im"><img src="assets/fig/menu-food-coffee.png" alt="" style="height:100%;left:-1.98%;top:0;width:101.68%"></span></span><p>Food,coffee</p></button>
+        <button class="f-mitem"><span class="ph"><span class="im"><span style="position:absolute;left:0;top:0;width:60px;height:60px;overflow:hidden"><img src="assets/fig/menu-efood-market.png" alt="" style="height:100%;left:-11.64%;top:0;width:125.62%"></span></span></span><p>efood market</p></button>
+        <button class="f-mitem"><span class="ph"><span class="im"><span style="position:absolute;left:0;top:0;width:60px;height:60px;overflow:hidden"><img src="assets/fig/menu-supermarkets.png" alt="" style="height:108.21%;left:-11.06%;top:-2.53%;width:117.85%"></span></span></span><p>Supermarkets</p></button>
+        <button class="f-mitem"><span class="ph"><span class="im"><span style="position:absolute;left:0;top:0;width:60px;height:60px;overflow:hidden"><img src="assets/fig/menu-shops.png" alt="" style="height:102.5%;left:-1.33%;top:0;width:102.03%"></span></span></span><p>Shops</p></button>
+      </div>
+      <div class="f-banner"><div class="bi"><img src="assets/fig/banner-breakfast.png" alt="A good day starts with a good breakfast"></div><img class="pager" src="assets/fig/pager.svg" width="54" height="14" alt=""></div>
+      <div class="f-rubies"><div class="sec">
+        <div class="hd"><p>Your Rubies and coupons</p><img class="gems" src="assets/fig/rubies-header-gems.svg" alt=""></div>
+        <div class="car hscroll">
+          <button class="rc stamp" id="ekibenCard" aria-label="Ekiben kitchen: 3 of 4 rubies, 1 more to 5 euro off"><span class="top"><img src="assets/fig/logo-ekiben.png" alt="" style="border-radius:50%"><span class="inf"><span class="n">Ekiben kitchen</span><span class="r">★ 4.9 (1418) Asian</span><span class="m">30-40' • Min. €6.00</span></span></span>
+            <span class="rubies"><span class="row" data-rubies="3" data-slots="4"></span></span></button>
+          <button class="rc stamp" id="coffeeCard" data-go="store"><span class="top"><img src="assets/fig/logo-coffeelab.svg" alt=""><span class="inf"><span class="n">Coffee Lab</span><span class="r">★ 4.7 (859) Coffee</span><span class="m">20-25' • Min. €6.00</span></span></span>
+            <span class="rubies"><span class="row" data-coffee-rubies="24"></span></span></button>
+          <button class="rc voucher"><span class="top"><img src="assets/fig/logo-roma.svg" alt=""><span class="inf"><span class="n">Roma Pizza</span><span class="r">★ 4.3 (1815) Pizza</span><span class="m">30-35' • Min. €6.00</span></span></span>
+            <span class="vb"><img class="bg" src="assets/fig/voucher-subtract.svg" alt=""><img class="st" src="assets/fig/voucher-star-a.svg" style="left:99px;top:12px;width:8px;height:8px" alt=""><img class="st" src="assets/fig/voucher-star-b.svg" style="left:3px;top:5px;width:11px;height:11px" alt="">
+              <img class="st" src="assets/fig/voucher-star-c.svg" style="left:106px;top:1px;width:15px;height:16px" alt=""><span class="w"><img src="assets/fig/voucher-2e-discount.svg" width="89.79" height="22.76" alt="2€ discount" style="margin:-2.5px 0 -2.5px -2.5px"><span class="claim">Claim</span></span></span></button>
+        </div>
+        <div class="grad"><img src="assets/fig/rubies-wave-1.svg" style="left:-38.5px;top:80.8px;width:528.7px;height:113.2px" alt=""><img src="assets/fig/rubies-wave-2.svg" style="left:-38.5px;top:100.8px;width:528.7px;height:113.2px" alt=""><img src="assets/fig/rubies-wave-3.svg" style="left:-43.8px;top:115.5px;width:539.3px;height:118.5px" alt=""><img class="twinkle" src="assets/fig/rubies-star.svg" style="left:10.5px;top:46.5px;width:21.98px;height:21.98px;mix-blend-mode:overlay" alt=""><img class="twinkle t2" src="assets/fig/rubies-star.svg" style="left:228.5px;top:195.5px;width:21.98px;height:21.98px;mix-blend-mode:overlay" alt=""></div>
+      </div></div>
+      <div class="f-sec"><div class="f-sechdr"><span class="t">120 stores</span><span class="l">See all <img src="assets/fig/chevron-right-group.svg" width="8.94" height="15" alt="" style="margin:0 5.5px;transform:scaleX(-1)"></span></div><div class="f-shops hscroll"><button class="f-shop" data-go="store"><div class="cv"><img src="assets/fig/cover-coffeelab.png" alt="" draggable="false"><span class="badge"><img src="assets/fig/icon-moped.svg" width="18" height="18" alt=""><span>0.50€</span><b>Free with</b><img src="assets/fig/efood-pro-badge.png" width="23" height="11" alt="pro" style="object-fit:cover"></span></div>
+          <div class="info"><span class="nm">Coffee Lab</span><span class="rt"><img src="assets/fig/icon-star.svg" width="14" height="12.44" alt=""><span class="v">4.7</span><span class="c">(859)</span><span class="k">Coffee</span></span><span class="mt">20' - 25' • Min €6.00</span></div></button><button class="f-shop"><div class="cv"><img src="assets/fig/cover-roma.png" alt="" draggable="false"><span class="badge"><img src="assets/fig/icon-moped.svg" width="18" height="18" alt=""><span>0.50€</span><b>Free with</b><img src="assets/fig/efood-pro-badge.png" width="23" height="11" alt="pro" style="object-fit:cover"></span></div>
+          <div class="info"><span class="nm">Roma Pizza</span><span class="rt"><img src="assets/fig/icon-star.svg" width="14" height="12.44" alt=""><span class="v">4.3</span><span class="c">(1815)</span><span class="k">Pizza</span></span><span class="mt">30' - 35' • Min €6.00</span></div></button></div></div>
+      <div class="f-sec"><div class="f-sechdr"><span class="t">120 stores</span><span class="l">See all <img src="assets/fig/chevron-right-group.svg" width="8.94" height="15" alt="" style="margin:0 5.5px;transform:scaleX(-1)"></span></div><div class="f-shops hscroll"><div class="f-tile"><img src="assets/fig/banner-pro-tile.png" alt="efood pro – find stores" style="width:100.98%"></div><button class="f-shop"><div class="cv"><img src="assets/fig/cover-bbw.png" alt="" draggable="false"><span class="badge"><img src="assets/fig/icon-moped.svg" width="18" height="18" alt=""><span>0.50€</span><b>Free with</b><img src="assets/fig/efood-pro-badge.png" width="23" height="11" alt="pro" style="object-fit:cover"></span></div>
+          <div class="info"><span class="nm">The Big Bad Wolf</span><span class="rt"><img src="assets/fig/icon-star.svg" width="14" height="12.44" alt=""><span class="v">4.1</span><span class="c">(7909)</span><span class="k">Souvlaki</span></span><span class="mt">30' - 35' • Min €4.90</span></div></button><button class="f-shop"><div class="cv"><img src="assets/fig/cover-coffeeisland.png" alt="" draggable="false"><span class="badge"><img src="assets/fig/icon-moped.svg" width="18" height="18" alt=""><span>0.50€</span><b>Free with</b><img src="assets/fig/efood-pro-badge.png" width="23" height="11" alt="pro" style="object-fit:cover"></span></div>
+          <div class="info"><span class="nm">Coffee Island</span><span class="rt"><img src="assets/fig/icon-star.svg" width="14" height="12.44" alt=""><span class="v">4.1</span><span class="c">(1450)</span><span class="k">Coffee</span></span><span class="mt">30' - 35' • Min €1.00</span></div></button></div></div>
+      <div class="f-sec"><div class="f-sechdr"><span class="t">120 stores</span><span class="l">See all <img src="assets/fig/chevron-right-group.svg" width="8.94" height="15" alt="" style="margin:0 5.5px;transform:scaleX(-1)"></span></div><div class="f-shops hscroll"><button class="f-shop"><div class="cv"><img src="assets/fig/cover-mikel.png" alt="" draggable="false"><span class="badge"><img src="assets/fig/icon-moped.svg" width="18" height="18" alt=""><span>0.50€</span><b>Free with</b><img src="assets/fig/efood-pro-badge.png" width="23" height="11" alt="pro" style="object-fit:cover"></span></div>
+          <div class="info"><span class="nm">Mikel</span><span class="rt"><img src="assets/fig/icon-star.svg" width="14" height="12.44" alt=""><span class="v">3.7</span><span class="c">(377)</span><span class="k">Coffee</span></span><span class="mt">25' - 30' • Min €3.00</span></div></button><button class="f-shop"><div class="cv"><img src="assets/fig/cover-barato.png" alt="" draggable="false"><span class="badge"><img src="assets/fig/icon-moped.svg" width="18" height="18" alt=""><span>0.50€</span><b>Free with</b><img src="assets/fig/efood-pro-badge.png" width="23" height="11" alt="pro" style="object-fit:cover"></span></div>
+          <div class="info"><span class="nm">Barato cafe</span><span class="rt"><img src="assets/fig/icon-star.svg" width="14" height="12.44" alt=""><span class="v">4.4</span><span class="c">(364)</span><span class="k">Coffee</span></span><span class="mt">30' - 35' • Min €2.00</span></div></button></div></div>
+     </div>
+    </div>
+    <div class="startover" id="startOver"><button id="startOverBtn" type="button" aria-describedby="startOverDesc">Start over</button><span class="sr-only" id="startOverDesc">Resets Coffee Lab to 1 ruby and empties your basket</span></div>
+    <p class="sr-only" id="srStatus" role="status" aria-live="polite"></p>
+    <nav class="f-nav"><button class="on"><span class="ni"><img src="assets/fig/nav-discover-active.svg" width="21" height="24" alt=""></span>Discover</button><button data-go="food"><span class="ni"><img src="assets/fig/nav-cutlery.svg" width="17.875" height="22" alt=""></span>Food,coffee</button><button><span class="ni"><img src="assets/fig/nav-carrot.svg" width="20.985" height="22" alt=""></span>Supermarkets</button><button><span class="ni"><img src="assets/fig/nav-shops.svg" width="21" height="24" alt=""></span>Shops</button></nav>
+  </section>
+
+  <!-- 2 · FOOD, COFFEE -->
+  <section class="screen" id="food">
+    <img class="statusbar" src="assets/fig/statusbar.svg" alt="">
+    <div class="scroll" style="padding-top:64px;padding-bottom:99px">
+     <div style="display:flex;flex-direction:column;gap:16px">
+      <div class="f-header"><div style="display:flex;flex-direction:column;gap:2px"><div class="f-title">Food,coffee</div><div class="f-addr">Address <img src="assets/fig/chevron-down.svg" width="14" height="14" alt=""></div></div>
+        <div class="f-iconbtns"><span class="f-iconbtn"><span class="ic"><img src="assets/fig/icon-basket.svg" width="24" height="24" alt="Basket" style="inset:0"></span></span><span class="f-iconbtn"><span class="ic"><img src="assets/fig/icon-user.svg" width="18" height="20" alt="Profile" style="left:3px;top:2px"></span></span><span class="f-notif">1</span></div></div>
+      <div class="f-search"><img src="assets/fig/search.svg" width="20" height="20" alt=""><span>Search</span></div>
+      <div class="f-menu"><button class="f-mitem"><span class="ph"><span class="im"><img src="assets/fig/cat-coffee.png" alt="" style="object-fit:cover;left:50%;transform:translateX(-50%);top:0;bottom:0;aspect-ratio:160/159;height:100%"></span></span><p>Coffee</p></button><button class="f-mitem"><span class="ph"><span class="im"><img src="assets/fig/cat-souvlaki.png" alt="" style="object-fit:cover;left:0;right:0;top:50%;transform:translateY(-50%);aspect-ratio:1;width:100%"></span></span><p>Souvlakia</p></button><button class="f-mitem"><span class="ph"><span class="im"><img src="assets/fig/cat-pizza.png" alt="" style="object-fit:cover;left:0;right:0;top:50%;transform:translateY(-50%);aspect-ratio:1;width:100%"></span></span><p>Pizza</p></button><button class="f-mitem"><span class="ph"><span class="im"><img src="assets/fig/cat-brunch.png" alt="" style="object-fit:cover;left:50%;transform:translateX(-50%);top:0;bottom:0;aspect-ratio:160/159;height:100%"></span></span><p>Brunch</p></button><button class="f-mitem"><span class="ph"><span class="im"><img src="assets/fig/cat-crepes.png" alt="" style="object-fit:cover;left:50%;transform:translateX(-50%);top:0;bottom:0;aspect-ratio:1;height:100%"></span></span><p>Crepes</p></button><button class="f-mitem"><span class="ph"><span class="im"><img src="assets/fig/cat-homemade.png" alt="" style="object-fit:cover;left:0;right:0;top:50%;transform:translateY(-50%);aspect-ratio:1;width:100%"></span></span><p>Homemade food</p></button></div>
+      <div class="hscroll" style="display:flex;gap:16px;align-items:center;padding:8px 16px"><div style="flex:none;width:96px;height:120px;border-radius:8px;overflow:hidden;position:relative;background:#fff"><span style="position:absolute;inset:0;border-radius:12px;overflow:hidden"><span style="position:absolute;inset:0;border-radius:8px;overflow:hidden"><img src="assets/fig/fb-breakfast.png" alt="" style="position:absolute;max-width:none;height:108.81%;left:-1.28%;top:-2.74%;width:103.61%"></span></span></div><div style="flex:none;width:96px;height:120px;border-radius:8px;overflow:hidden;position:relative;background:#fff"><span style="position:absolute;inset:0;border-radius:12px;overflow:hidden"><span style="position:absolute;inset:0;border-radius:8px;overflow:hidden"><img src="assets/fig/fb-coffee.png" alt="" style="position:absolute;max-width:none;height:108.78%;left:-2.52%;top:-4.23%;width:106.72%"></span></span></div><div style="flex:none;width:96px;height:120px;border-radius:8px;overflow:hidden;position:relative;background:#fff"><span style="position:absolute;inset:0;border-radius:12px;overflow:hidden"><span style="position:absolute;inset:0;border-radius:8px;overflow:hidden"><img src="assets/fig/fb-happyhour.png" alt="" style="position:absolute;max-width:none;height:107.05%;left:-2.54%;top:-2.69%;width:105.93%"></span></span></div><div style="flex:none;width:96px;height:120px;border-radius:8px;overflow:hidden;position:relative;background:#fff"><span style="position:absolute;inset:0;border-radius:12px;overflow:hidden"><span style="position:absolute;inset:0;border-radius:8px;overflow:hidden"><img src="assets/fig/fb-happyhour.png" alt="" style="position:absolute;max-width:none;height:107.05%;left:-2.54%;top:-2.69%;width:105.93%"></span></span></div><div style="flex:none;width:96px;height:120px;border-radius:8px;overflow:hidden;position:relative;background:#fff"><span style="position:absolute;inset:0;border-radius:12px;overflow:hidden"><img src="assets/fig/fb-rubies.png" alt="Rubies" style="position:absolute;top:0;bottom:-1.67%;left:50%;transform:translateX(-50%);aspect-ratio:260/330;height:101.67%;object-fit:cover;max-width:none"></span></div><div style="flex:none;width:96px;height:120px;border-radius:8px;overflow:hidden;position:relative;background:#fff"><span style="position:absolute;inset:0;border-radius:12px;overflow:hidden"><span style="position:absolute;inset:0;border-radius:8px;overflow:hidden"><img src="assets/fig/fb-offers.png" alt="" style="position:absolute;max-width:none;height:106.88%;left:-1.69%;top:-2.02%;width:104.24%"></span></span></div><div style="flex:none;width:96px;height:120px;border-radius:8px;overflow:hidden;position:relative;background:#fff"><span style="position:absolute;inset:0;border-radius:12px;overflow:hidden"><span style="position:absolute;inset:0;border-radius:8px;overflow:hidden"><img src="assets/fig/fb-pro.png" alt="" style="position:absolute;max-width:none;height:105.48%;left:-3.17%;top:-1.99%;width:108.04%"></span></span></div><div style="flex:none;width:96px;height:120px;border-radius:8px;overflow:hidden;position:relative;background:#fff"><span style="position:absolute;inset:0;border-radius:12px;overflow:hidden"><span style="position:absolute;inset:0;border-radius:8px;overflow:hidden"><img src="assets/fig/fb-1plus1.png" alt="" style="position:absolute;max-width:none;height:107.44%;left:-2.54%;top:-1.36%;width:105.93%"></span></span></div></div>
+     </div>
+      <div class="s3 b strong" style="padding:16px 16px 4px">Order again</div>
+      <button class="card2" data-go="store" style="margin:0 16px;width:calc(100% - 32px);box-shadow:0 1px 6px rgba(0,0,0,.1);border:0">
+        <img class="mini-logo" src="assets/logo-lab.jpg" width="40" height="40" style="border-radius:50%" alt="">
+        <div><div class="s2 b strong">Coffee Lab</div><div class="s1 good">&#9733; 4.7 (859) Coffee</div><div class="s1 sec">20-25&#39; &bull; Min. &euro;6.00</div></div>
+      </button>
+      <div class="sec-title" style="padding-bottom:0"><span class="s3 b strong">940 stores</span></div>
+      <div id="foodList"></div>
+      <div style="margin:16px;background:var(--surface-subtle);border-radius:8px;text-align:center;padding:12px" class="s2 b sec">Browse closed stores</div>
+    </div>
+    <nav class="f-nav"><button data-go="home"><span class="ni"><img src="assets/fig/nav-shops.svg" width="21" height="24" alt=""></span>Discover</button><button class="on"><span class="ni"><img src="assets/fig/nav-cutlery-active.svg" width="17.875" height="22" alt=""></span>Food,coffee</button><button><span class="ni"><img src="assets/fig/nav-carrot.svg" width="20.985" height="22" alt=""></span>Supermarkets</button><button><span class="ni"><img src="assets/fig/nav-shops.svg" width="21" height="24" alt=""></span>Shops</button></nav>
+  </section>
+
+  <!-- 3 · STORE -->
+  <section class="screen" id="store">
+    <img class="statusbar clear" src="assets/fig/statusbar.svg" alt="">
+    <div class="scroll" id="storeScroll">
+      <div class="hero" style="background-image:url(assets/store-cover.jpg)">
+        <div class="acts" style="top:48px;padding:0;height:48px"><img src="assets/fig/actions-row.svg" width="375" height="48" alt="" style="position:absolute;left:0;top:0"><button data-go="food" data-dir="back" aria-label="Back" style="position:absolute;left:8px;top:8px;width:32px;height:32px"></button></div>
+      </div>
+      <div class="sheet">
+        <div class="row" style="justify-content:space-between;height:62px">
+          <div><div class="s5 b strong">Coffee Lab</div><span class="pro" style="font-style:normal;font-size:11px;padding:2px 6px;border-radius:4px;display:inline-block;margin-top:6px"><b>PRO</b> unlimited free delivery</span></div>
+          <img src="assets/logo-coffee-lab.jpg" width="62" height="62" style="border-radius:50%" alt="Coffee Lab">
+        </div>
+        <div class="row s1" style="gap:10px;margin:14px 0 10px;justify-content:space-between"><span class="b strong">Delivery: 30&#39; - 35&#39; <img class="ichev" src="assets/fig/icon-chevron-down.svg" alt=""></span><span class="sec"><b class="good">&#9733; 5.0</b> &bull; Min. &euro;4 &bull; Delivery &euro;0</span></div>
+        <hr style="border:0;border-top:1px solid var(--border-divider)">
+        <button class="pressable" id="storeRubies" aria-label="Your rubies: 4 more to a 2 euro coupon"><span class="rw-mini"><span class="row" data-coffee-rubies="24"></span><span class="tx"><span class="a" id="storeRubiesTxt">4 rubies to €2 off</span><span class="b">Expires 31/12</span></span><span class="rw-glow" aria-hidden="true"><img src="assets/fig/card-glow-ellipse.svg" alt="" style="left:-354.9px;top:-25.9px;width:523.8px;height:565.8px"></span></span></button>
+        <div class="f-search" style="margin:8px 0"><img src="assets/fig/search.svg" width="20" height="20" alt=""><span>Search</span></div>
+        <div class="s4 b strong" style="margin:18px 0 4px">Popular</div>
+        <div id="menuList"></div>
+        <div style="height:120px"></div>
+      </div>
+    </div>
+    <div class="cta-wrap" id="basketBar"><button class="cta" data-go="order"><span class="count" id="basketCount">1</span><span>View order</span><span id="basketTotal">&euro;0.00</span></button></div>
+  </section>
+
+  <!-- 4 · ORDER (payment) -->
+  <section class="screen" id="order">
+    <img class="statusbar" src="assets/fig/statusbar.svg" alt="">
+    <div class="scroll" style="padding-top:62px;padding-bottom:110px">
+      <button class="back" data-go="store" data-dir="back" aria-label="Back"><img src="assets/fig/icon-chevron-left.svg" width="24" height="24" alt=""></button>
+      <div class="pad" style="margin-top:8px"><div class="s6 b strong" style="line-height:40px">Order</div><div class="s2" style="margin-top:2px"><b>Delivery:</b> In 10&#39; - 15&#39; <img class="ichev" src="assets/fig/icon-chevron-down.svg" alt=""></div></div>
+      <div class="pad" style="margin-top:14px">
+        <div class="card2"><div class="map"><i style="left:0;top:36px;width:52px;height:3px"></i><i style="left:8px;top:0;width:3px;height:52px"></i><i style="left:30px;top:0;width:2px;height:52px"></i><i style="left:0;top:16px;width:52px;height:2px"></i><b></b><u></u></div><div style="flex:1"><div class="s3 b strong">Sevastias 29</div><div class="s2 sec">Floor 4 &bull; Athens</div></div><span class="s4"><img class="ichev r" src="assets/fig/icon-chevron-left.svg" alt=""></span></div>
+        <div class="row" style="gap:12px;margin-top:12px;align-items:stretch">
+          <div class="card2" style="width:100px;justify-content:center;color:var(--text-secondary)" ><span class="s2">+ Coupon</span></div>
+          <div class="card2" style="flex:1;flex-direction:column;align-items:flex-start;gap:4px"><span class="s1 sec">Payment method</span><span class="row s2 b strong" style="gap:8px"><svg width="22" height="16" viewBox="0 0 22 16"><rect x=".75" y=".75" width="20.5" height="14.5" rx="3" fill="none" stroke="#000" stroke-width="1.5"/><rect y="3" width="22" height="4" fill="#000"/></svg>Credit / debit card</span></div>
+        </div>
+        <div id="orderItems" style="margin-top:6px"></div>
+        <div class="fee"><div class="ic"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#000" stroke-width="2"><path d="M4 8h16l-1.5 12h-13zM8 8a4 4 0 018 0"/></svg></div><div class="t s3">Delivery fee <img class="ichev r" src="assets/fig/icon-chevron-left.svg" alt=""></div><b class="s2 strong">&euro;0.00</b></div>
+        <div class="fee"><div class="ic"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#000" stroke-width="2"><path d="M4 9l2-5h12l2 5M5 9v11h14V9M9 20v-6h6v6"/></svg></div><div class="t s3">Service fee <img class="ichev r" src="assets/fig/icon-chevron-left.svg" alt=""></div><b class="s2 strong">&euro;0.30</b></div>
+        <div class="fee"><div class="ic"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#000" stroke-width="2"><path d="M6 3h12v18l-3-2-3 2-3-2-3 2zM9 8h6M9 12h6"/></svg></div><div class="t"><div class="s3">Order total</div><div class="s2 sec">Order details <img class="ichev r" src="assets/fig/icon-chevron-left.svg" alt=""></div></div><b class="s2 strong" id="orderTotal">&euro;0.00</b></div>
+      </div>
+    </div>
+    <div class="cta-wrap show"><button class="cta" id="sendOrder"><span class="count" id="orderCount">0</span><span>Send Order</span><span id="orderTotal2">&euro;0.00</span></button></div>
+  </section>
+
+  <!-- 5 · ORDER STATUS -->
+  <section class="screen" id="status">
+    <div class="scroll" style="background:#fff">
+      <div class="stage" id="stage">
+        <!-- hero: animation 1 (0 – 3 s) -->
+        <div class="heroBox"><img id="heroImg" src="assets/fig/status-hero.png" alt="Your order is on its way" style="position:absolute;left:-9px;top:0;width:384px;height:263px;object-fit:cover"><span id="mapImg" style="position:absolute;left:3px;top:-2px;width:381px;height:269px;overflow:hidden;opacity:0;transform-origin:50% 60%"><img src="assets/fig/status-map.png" alt="Map of the delivery area" style="position:absolute;left:0;top:0;width:100.09%;height:106.32%;max-width:none"><span class="mapPulse" style="left:200px;top:174px"></span><img id="mapPin" src="assets/fig/map-pin.svg" width="25" height="33" alt="Delivery address" style="position:absolute;left:207px;top:180px;transform-origin:50% 100%"></span></div>
+        <div class="sheetCover" id="cover"></div>
+        <img class="statusbar clear" src="assets/fig/statusbar.svg" alt="" style="position:absolute">
+        <img class="sbwhite" id="sbWhite" src="assets/fig/statusbar.svg" alt="">
+        <div style="position:absolute;top:48px;left:0;width:375px;height:48px;z-index:7"><img src="assets/fig/actions-row.svg" width="375" height="48" alt=""><button data-go="home" data-dir="back" aria-label="Back" style="position:absolute;left:8px;top:8px;width:32px;height:32px"></button></div>
+        <!-- order sheet (static base) -->
+        <div id="sheetGrp" style="position:absolute;inset:0;z-index:3">
+          <div class="info-sheet"><div class="nr"><h2>At your door 12:00 - 12:05</h2><div class="stepper"><i></i><i></i><i></i><i></i></div>
+            <div class="blk"><span id="st1">Waiting for order confirmation</span><span id="st2" style="opacity:0">Your order has been confirmed</span><span id="st3" style="opacity:0">Delivering your order soon</span></div></div>
+            <div class="dv"></div><div class="fr"><div><img src="assets/fig/banner-pro.png" alt="Unlimited free delivery – be a pro"></div><div><img class="ad" src="assets/fig/ad-fixers.jpg" alt="The Fixers" style="height:125.08%;width:100%;left:-.21%;top:-14.2%"></div><div><img class="ad" src="assets/fig/ad-lego.jpg" alt="LEGO" style="height:125.08%;width:100%;left:0;top:0;object-fit:cover"></div></div></div>
+        </div>
+        <div class="rw-large layer a" id="aCard" role="img" aria-label="A little thank-you from Coffee Lab: your first ruby, 1/5"><p id="aCardTitle">A little thank-you from Coffee Lab: your first ruby, 1/5</p><div class="rowWrap" style="position:relative"><div class="row" id="aCardRow"></div><div id="aStampLayer" style="position:absolute;left:0;top:0;width:0;height:0"><span class="st-slot layer a" id="aPh" style="position:absolute;left:0;top:0;z-index:5"><img src="assets/fig/stamp-placeholder.svg" alt=""><span class="num" id="aPhNum">2</span></span><img class="layer a" id="aStamp" src="assets/fig/stamp-ruby-30.svg" style="left:0;top:0;width:30px;height:30px;z-index:6" alt=""><div id="crystals"></div><img class="layer a" id="aSpark" src="assets/fig/spark.svg" alt="" style="left:13.4px;top:8.8px;width:10px;height:10px;z-index:8"></div></div><p class="c" id="aCardNote">Collect 4 more by 30/11 and 2 euro coupon is yours.</p><div class="rw-glow" aria-hidden="true"><img src="assets/fig/card-glow-ellipse.svg" alt="" style="left:-354.9px;top:-25.9px;width:523.8px;height:565.8px"></div></div>
+        
+        
+        
+      </div>
+    </div>
+  </section>
+
+</div>
+<div class="hint">Interactive prototype · tap Food,coffee → Coffee Lab → + → View order → Send Order → watch the status animation</div>
+
+<script>
+/* ---------- data ---------- */
+const MENU=[
+ {id:'espresso',n:'Espresso',d:'The star of coffees! Pressure-brewed to decompress you at any time of day.',p:1.80,from:true,img:'item-espresso.jpg'},
+ {id:'cappuccino',n:'Cappuccino',d:'The most popular coffee, with a perfect balance of coffee and milk.',p:2.50,from:true,img:'item-cappuccino.jpg'},
+ {id:'freddo-espresso',n:'Freddo espresso',d:'Enjoy a refreshing freddo espresso, ideal for hot days. The perfect mix of rich coffee and ice.',p:2.40,from:true,img:'item-freddo-espresso.jpg'},
+ {id:'freddo-cappuccino',n:'Freddo cappuccino',d:'Iced espresso with cold milk foam. The European take on iced coffee.',p:2.60,from:true,img:'item-freddo-cappuccino.jpg'},
+ {id:'egg-lab',n:'Egg Lab turkey & egg sandwich',d:'With boiled egg, smoked turkey, provolone & mayonnaise on brioche bread',p:4.50,from:true,img:'item-egg-lab.jpg'},
+ {id:'toast',n:'Whole-grain turkey & gouda toast',d:'',p:2.50,from:true,img:'item-toast.jpg'},
+ {id:'praline',n:'Praline chocolate croissant',d:'What is better than a croissant? A chocolate croissant! Enjoy every bite.',p:3.20,from:false,img:'item-praline.jpg'},
+ {id:'pistachio',n:'Handmade pistachio croissant',d:'',p:3.20,from:false,img:'item-pistachio.jpg'},
+ {id:'dark',n:'Dark chocolate',d:'Chocolate is the answer, whatever the question. Enjoy it any hour of the day or night.',p:3.10,from:true,img:'item-dark-chocolate.jpg'},
+ {id:'milk',n:'Milk chocolate',d:'Chocolate is the answer, whatever the question. Enjoy it any hour of the day or night.',p:3.10,from:true,img:'item-milk-chocolate.jpg'}];
+const STORES=[
+ ['Coffee Lab','4.7','(859)','Coffee',"20' - 25'",'6.00','lab.jpg'],
+ ['Grigoris','3.7','(338)','Coffee',"30' - 35'",'3.00','grigoris.jpg'],
+ ['Coffee Island','4.1','(1450)','Coffee',"30' - 35'",'1.00','island.jpg'],
+ ['Barato cafe','4.4','(364)','Coffee',"30' - 35'",'2.00','barato.png'],
+ ['Mikel','3.7','(377)','Coffee',"25' - 30'",'3.00','mikel.jpg'],
+ ['Baristart','-','(9)','Coffee',"20' - 25'",'6.00','baristart.jpg'],
+ ['Roma Pizza','4.3','(1815)','Pizza',"30' - 35'",'6.00','roma.png'],
+ ['The Big Bad Wolf','4.1','(7909)','Souvlaki',"30' - 35'",'4.90','bbw.jpg']];
+const SERVICE=0.30, eur=n=>'€'+n.toFixed(2);
+const cart={}; // id -> qty
+
+/* ---------- render ---------- */
+document.getElementById('foodList').innerHTML=STORES.map(s=>`
+ <button class="mini" ${s[0]==='Coffee Lab'?'data-go="store"':''}><img class="logo" src="assets/logo-${s[6]}" alt="">
+ <div class="meta"><span class="s2 b strong">${s[0]}</span>
+ <span class="s2 rating"><span class="good">&#9733;</span><b class="good">${s[1]}</b><span class="s1 sec">${s[2]}</span><span class="s1 b sec">${s[3]}</span></span>
+ <span class="s1 b sec">Delivery 0&euro; with <span class="pro">pro</span></span>
+ <span class="s1 sec">${s[4]} &bull; Minimum &euro;${s[5]}</span>
+ <span>${s[0]==='Coffee Lab'?'<span class="pill deal" id="foodRubiesTag">1/4 rubies</span>':'<span class="pill deal">1+1 Deals</span>'}</span></div></button>`).join('');
+document.getElementById('menuList').innerHTML=MENU.map(m=>`
+ <div class="item" data-add="${m.id}"><div class="txt"><span class="nm">${m.n}</span>${m.d?`<span class="ds">${m.d}</span>`:''}<span class="pr">${m.from?'From ':''}${eur(m.p)}</span></div>
+ <div class="ph"><img src="assets/${m.img}" alt=""></div><button class="plus" data-add="${m.id}" aria-label="Add ${m.n}"><img src="assets/fig/icon-plus-menu.svg" alt=""></button></div>`).join('');
+
+/* ---------- cart ---------- */
+const lines=()=>MENU.filter(m=>cart[m.id]).map(m=>({...m,q:cart[m.id]}));
+const sub=()=>lines().reduce((a,l)=>a+l.p*l.q,0);
+const count=()=>lines().reduce((a,l)=>a+l.q,0);
+function refreshCart(){
+  const c=count();
+  document.getElementById('basketBar').classList.toggle('show',c>0);
+  document.getElementById('basketCount').textContent=c;
+  document.querySelectorAll('.f-notif').forEach(n=>{n.textContent=c;n.style.display=c>0?'':'none';}); // header basket badge follows the basket
+  document.getElementById('basketTotal').textContent=eur(sub()+SERVICE);
+  document.querySelectorAll('.plus[data-add]').forEach(b=>{const q=cart[b.dataset.add]||0;b.classList.toggle('on',q>0);b.setAttribute('aria-label',q>0?`${q} in basket`:'Add');b.innerHTML=q>0?`${q} <img class="chev" src="assets/fig/icon-chevron-down.svg" alt="">`:'<img src="assets/fig/icon-plus-menu.svg" alt="">';});
+  document.getElementById('orderItems').innerHTML=lines().map(l=>`<div class="oi"><span class="qty">${l.q} <img class="ichev" src="assets/fig/icon-chevron-down.svg" alt=""></span><div style="flex:1;text-align:left"><div class="s3 strong">${l.n}</div><div class="s2 sec">Regular, No sugar</div><div class="s2 b strong">${eur(l.p*l.q)}</div></div><img src="assets/${l.img}" alt=""></div>`).join('');
+  const t=sub()+SERVICE;
+  document.getElementById('orderTotal').textContent=eur(t);
+  document.getElementById('orderTotal2').textContent=eur(t);
+  document.getElementById('orderCount').textContent=c;
+}
+
+
+/* ---------- order-status animation (copied from the Figma 'Store – ruby stamp' frame) ----------
+   Timeline (seconds): 0–3 hero illustration  →  3.0 rubies card + banners slide in  →  5.6 ruby stamp
+   →  6.05 crystal burst  →  7.35 spark.  The second animation only starts once the first one ends. */
+const EASE={LINEAR:'linear',EASE_OUT:'cubic-bezier(0,0,.58,1)',EASE_IN_AND_OUT:'cubic-bezier(.42,0,.58,1)',EASE_IN:'cubic-bezier(.42,0,1,1)',CUSTOM:'cubic-bezier(.5,0,.5,1)'};
+const HOLD=2, HOLD_AT=8.0; // stamped card stays on screen 2 s longer before it is pulled up
+const TOTAL=9.1+HOLD, HERO_END=3;
+let holdShift=true; const ht=t=>holdShift&&t>=HOLD_AT?t+HOLD:t;
+const anims=[]; window.__anims=anims; // exposed so the timeline can be scrubbed from the console
+function track(el,prop,pts,fmt){ // pts: [[t,value,easingOfThisKeyframe],...] Figma easing = easing INTO that keyframe
+  pts=pts.map(p=>[ht(p[0]),p[1],p[2]]);
+  const kf=[]; const first=pts[0];
+  if(first[0]>0)kf.push({offset:0,[prop]:fmt(first[1]),easing:'linear'});
+  pts.forEach((p,i)=>{const next=pts[i+1];kf.push({offset:p[0]/TOTAL,[prop]:fmt(p[1]),easing:next?EASE[next[2]]||EASE.LINEAR:'linear'});});
+  const last=pts[pts.length-1]; if(last[0]<TOTAL)kf.push({offset:1,[prop]:fmt(last[1]),easing:'linear'});
+  const a=el.animate(kf,{duration:TOTAL*1000,fill:'both',easing:'linear'}); a.pause(); a.currentTime=0; anims.push(a); return a;
+}
+const px=v=>v+'px', deg=v=>(-v)+'deg'; // Figma rotation is counter-clockwise, CSS clockwise
+function translate(el,xs,ys){ // xs/ys share keyframe times
+  const base=ys||xs; const pts=base.map((p,i)=>[p[0],(xs?xs[i][1]:0)+'px '+(ys?ys[i][1]:0)+'px',p[2]]);
+  return track(el,'translate',pts,v=>v);
+}
+const C='CUSTOM';
+// --- animation 1: hero illustration, 0 – 3 s
+const hero=document.getElementById('heroImg');
+track(hero,'opacity',[[0,0,C],[.6,1,'EASE_OUT']],v=>v);
+translate(hero,null,[[0,28,C],[1.2,-6,'EASE_OUT'],[1.8,0,'EASE_IN_AND_OUT']]);
+track(hero,'scale',[[0,1.1,C],[3,1,'EASE_OUT']],v=>v);
+// --- 1. hero 0–3 s · 2. status text swaps 3.0–3.45 s · 3. then the white sheet moves up 4.0–4.35 s (ease-in: slow start, fast finish, like the card drop)
+const cover=document.getElementById('cover');
+{const ins=v=>`inset(${v}px 0 0 0 round ${Math.min(24,v/10)}px ${Math.min(24,v/10)}px 0 0)`;
+ track(cover,'clipPath',[[4.0,254,C],[4.35,0,'EASE_IN'],[8.3,0,C],[8.62,266,'EASE_IN'],[8.78,251,'EASE_OUT'],[8.9,254,'EASE_IN_AND_OUT']],ins);}
+track(document.getElementById('sbWhite'),'opacity',[[4.15,0,C],[4.35,1,'EASE_IN'],[8.35,1,C],[8.55,0,'EASE_OUT']],v=>v);
+// status text swap, then the rubies card drops in (4.3 s)
+track(document.getElementById('st1'),'opacity',[[3.0,1,C],[3.2,0,'EASE_OUT']],v=>v);
+track(document.getElementById('st2'),'opacity',[[3.2,0,C],[3.45,1,'EASE_OUT'],[8.55,1,C],[8.7,0,'EASE_OUT']],v=>v);
+translate(document.getElementById('st2'),[[8.55,0,C],[8.7,-12,'EASE_IN']],null);
+// end state (Wolt-style spring): card lifts away, sheet springs back down over the map, status copy slides in
+const st3=document.getElementById('st3');
+track(st3,'opacity',[[8.65,0,C],[8.85,1,'EASE_OUT']],v=>v);
+translate(st3,[[8.65,-16,C],[8.88,3,'EASE_OUT'],[8.98,0,'EASE_IN_AND_OUT']],null);
+translate(document.getElementById('sheetGrp'),null,[[8.3,0,C],[8.62,12,'EASE_IN'],[8.78,-3,'EASE_OUT'],[8.9,0,'EASE_IN_AND_OUT']]);
+const map=document.getElementById('mapImg');
+track(map,'opacity',[[8.2,0,C],[8.25,1,'LINEAR']],v=>v);
+track(map,'scale',[[8.3,1.06,C],[9.05,1,'EASE_OUT']],v=>v);
+const pin=document.getElementById('mapPin'); // pin drops onto the map as it appears
+translate(pin,null,[[8.3,-18,C],[8.55,0,'EASE_IN'],[8.65,-4,'EASE_OUT'],[8.75,0,'EASE_IN']]);
+const D=4.45; // card drop start
+track(document.getElementById('aCard'),'opacity',[[D,0,C],[D+.08,1,'LINEAR']],v=>v);
+translate(document.getElementById('aCard'),null,[[D,-240,C],[D+.28,0,'EASE_IN'],[D+.4,-16,'EASE_OUT'],[D+.52,0,'EASE_IN'],[D+.6,-5,'EASE_OUT'],[D+.67,0,'EASE_IN'],[6.1,0,C],[6.18,1.5,'EASE_OUT'],[6.4,0,'EASE_IN_AND_OUT'],[8.0,0,C],[8.1,6,'EASE_OUT'],[8.4,-260,'EASE_IN']]);
+track(document.getElementById('aPh'),'opacity',[[6.05,1,C],[6.1,0,'EASE_OUT']],v=>v);
+const stamp=document.getElementById('aStamp');
+track(stamp,'opacity',[[5.6,0,C],[5.85,1,'EASE_OUT']],v=>v);
+translate(stamp,null,[[5.6,-12,C],[6.1,0,'EASE_IN_AND_OUT']]); // lifts away with the card (it sits inside it)
+track(stamp,'rotate',[[5.6,6,C],[6.1,0,'EASE_IN_AND_OUT']],deg);
+track(stamp,'scale',[[5.6,1.6,C],[6.1,.94,'EASE_IN_AND_OUT'],[6.32,1,'EASE_IN_AND_OUT']],v=>v);
+// crystal burst: [left, top, w, h, dx, dy, rot]
+const CRYS=[[45,447.5,6,7,29.784,1.702,-140],[44,446,8,10,31.082,24.826,163],[45.5,448,5,6,12.619,21.419,-186],[44.5,447,7,8,-21.343,29.355,209],[45,447.5,6,7,-21.985,17.064,-142],[44,446,8,10,-44.273,-1.156,165],[45.5,448,5,6,-26.207,-5.345,-188],[44.5,447,7,8,-6.019,-24.541,211],[45,447.5,6,7,5.788,-14.839,-144],[44,446,8,10,40.553,-8.483,167]];
+const cr=document.getElementById('crystals');
+CRYS.forEach(([l,t,w,h,dx,dy,rot])=>{
+  const s=document.createElement('img'); s.src='assets/fig/ruby-stamp.svg'; s.alt=''; s.classList.add('layer','a');
+  s.dataset.l=l; s.dataset.t=t-273; s.style.cssText=`left:${l}px;top:${t-273}px;width:${w}px;height:${h}px;z-index:6;opacity:0`;
+  cr.appendChild(s);
+  track(s,'opacity',[[6.05,0,C],[6.1,1,'LINEAR'],[6.4,.9,'LINEAR'],[6.65,0,'EASE_OUT']],v=>v);
+  translate(s,[[6.1,0,C],[6.65,dx,'EASE_OUT']],[[6.1,0,C],[6.65,dy,'EASE_OUT']]);
+  track(s,'rotate',[[6.1,0,C],[6.65,rot,'EASE_OUT']],deg);
+  track(s,'scale',[[6.1,.3,C],[6.22,1,'EASE_OUT'],[6.65,.4,'EASE_IN_AND_OUT']],v=>v);
+});
+const spark=document.getElementById('aSpark');
+holdShift=false; // the spark keeps its own timing (fades just before the hold)
+track(spark,'opacity',[[7.35,0,C],[7.43,1,'EASE_OUT'],[7.95,1,C],[8.1,0,'EASE_OUT']],v=>v);
+track(spark,'scale',[[7.35,.1,C],[7.6,2,'EASE_OUT'],[7.95,1,'EASE_IN_AND_OUT']],v=>v);
+holdShift=true;
+function playStatus(){anims.forEach(a=>{a.currentTime=0;a.play();});}
+function resetStatus(){anims.forEach(a=>{a.pause();a.currentTime=0;});}
+
+
+/* ---------- rubies state: Coffee Lab starts with 1 of 5; every order stamps one more ---------- */
+const COFFEE_SLOTS=5; let coffeeRubies=1;
+const ORD=['first','second','third','fourth','fifth'];
+function stampRow(el,have,slots,skip){ // Figma .Ruby stamp for collected rubies, numbered placeholders for the rest
+  el.innerHTML=Array.from({length:slots},(_,i)=>i<have?`<span class="st-slot"><img src="assets/fig/stamp-ruby-30.svg" alt="Ruby collected"></span>`
+    :i===skip?`<span class="st-slot"></span>`:`<span class="st-slot"><img src="assets/fig/stamp-placeholder.svg" alt=""><span class="num">${i+1}</span></span>`).join('');
+}
+function rubyRow(el,have,slots,size){
+  const on=size==32?'ruby-active-32.svg':`ruby-active-${size}.svg`, off=size==32?'ruby-inactive-32f.svg':`ruby-inactive-${size}.svg`;
+  el.innerHTML=Array.from({length:slots},(_,i)=>i<have?`<img src="assets/fig/${on}" alt="Ruby collected">`:`<img class="ruby-off" src="assets/fig/${off}" alt="">`).join('');
+}
+const COFFEE_STAMP_HTML=document.getElementById('coffeeCard').innerHTML;
+const FLOW_END=4; // the demo stops after the 4th Coffee Lab ruby
+const isComplete=()=>coffeeRubies>=FLOW_END;
+const isFull=()=>coffeeRubies>=COFFEE_SLOTS;
+function renderCoffeeCard(){
+  const c=document.getElementById('coffeeCard');
+  if(isFull()){ // same coupon design as the Roma Pizza card, for Coffee Lab's €2 off
+    const top=c.querySelector('.top')?c.querySelector('.top').outerHTML:'';
+    const vb=document.querySelector('.rc.voucher:not(#coffeeCard) .vb').outerHTML;
+    c.className='rc voucher'; c.removeAttribute('data-go'); c.innerHTML=top+vb; c.setAttribute('aria-label','Coffee Lab: €2 off coupon ready to claim');
+  } else { c.className='rc stamp'; c.dataset.go='store'; c.innerHTML=COFFEE_STAMP_HTML; c.removeAttribute('aria-label'); }
+  const so=document.getElementById('startOver'), was=so.classList.contains('show');
+  so.classList.toggle('show',isComplete());
+  if(isComplete()&&!was) announce(`You collected ${FLOW_END} Coffee Lab rubies. The demo ends here. Use the Start over button to play again.`);
+}
+function renderRubies(){
+  renderCoffeeCard();
+  document.querySelectorAll('[data-coffee-rubies]').forEach(el=>stampRow(el,coffeeRubies,COFFEE_SLOTS));
+  document.querySelectorAll('[data-rubies]').forEach(el=>stampRow(el,+el.dataset.rubies,+el.dataset.slots));
+  const left=COFFEE_SLOTS-coffeeRubies;
+  {const t=document.getElementById('foodRubiesTag'); if(t)t.textContent=`${Math.min(coffeeRubies,FLOW_END)}/${FLOW_END} rubies`;}
+  document.getElementById('storeRubiesTxt').textContent=left>0?`${left} ${left==1?'ruby':'rubies'} to €2 off`:'€2 off unlocked';
+  document.getElementById('storeRubies').setAttribute('aria-label',`Your rubies: ${left} more to a 2 euro coupon`);
+}
+let stampSlot=1;
+function placeStamp(){ // the stamp layer sits on top of the ruby row inside the card, so it always lands on the slot
+  const x=stampSlot*38; // 30px stamp slots + 8px gap
+  document.getElementById('aStampLayer').style.left=x+'px';
+  document.querySelectorAll('#crystals img').forEach(c=>{c.style.left=(+c.dataset.l-33)+'px';c.style.top=(+c.dataset.t-156)+'px';});
+}
+function prepStatusCard(){ // the card shows the rubies you already had; the stamp lands on the next slot
+  const had=Math.min(coffeeRubies,COFFEE_SLOTS-1), n=had+1, dx=had*40;
+  stampRow(document.getElementById('aCardRow'),had,COFFEE_SLOTS,had); // slot `had` is drawn by the stamp layer
+  document.getElementById('aPhNum').textContent=had+1;
+  document.getElementById('aCardTitle').textContent=`A little thank-you from Coffee Lab: your ${ORD[n-1]} ruby, ${n}/${COFFEE_SLOTS}`;
+  const left=COFFEE_SLOTS-n;
+  document.getElementById('aCardNote').textContent=left>0?`Collect ${left} more by 30/11 and 2 euro coupon is yours.`:'Your 2 euro coupon is ready to claim.';
+  document.getElementById('aCard').setAttribute('aria-label',document.getElementById('aCardTitle').textContent);
+  stampSlot=had; placeStamp();
+  return n;
+}
+renderRubies();
+
+/* ---------- router ---------- */
+const order=['home','food','store','order','status'];
+let current=null, timer=null;
+let ordered=false, homeShown=false;
+function go(id,dir){
+  if(id===current)return;
+  const next=document.getElementById(id), prev=current&&document.getElementById(current);
+  clearTimeout(timer);
+  document.querySelectorAll('.screen').forEach(s=>{if(s!==next&&s!==prev){s.classList.remove('active','left')}});
+  const back=dir==='back';
+  if(prev){prev.classList.remove('active'); if(!back)prev.classList.add('left'); else prev.style.transform='translateX(100%)';}
+  next.style.transform=''; next.classList.remove('left');
+  if(!back){next.style.transform='translateX(100%)'; void next.offsetWidth; next.style.transform='';}
+  else {next.classList.add('left'); void next.offsetWidth; next.classList.remove('left');}
+  next.classList.add('active');
+  setTimeout(()=>{if(prev&&current!==prev.id){prev.style.transform='';prev.classList.remove('left')}},320);
+  current=id;
+  const sc=next.querySelector('.scroll'); if(sc&&!back&&id!=='food')sc.scrollTop=0;
+  if(id==='status'){ordered=true;coffeeRubies=prepStatusCard();renderRubies();playStatus();Object.keys(cart).forEach(k=>delete cart[k]);refreshCart();} // order placed: empty the basket and menu selections for the next visit
+  if(id==='store'){const r=document.getElementById('storeRubies');r.classList.remove('show');void r.offsetWidth;setTimeout(()=>r.classList.add('show'),380);} // Coffee Lab already has 1 ruby, so the card shows on every visit
+  history.replaceState(null,'','#'+id); // replaceState: setting location.hash would scroll the phone to the element
+  document.getElementById('phone').scrollLeft=0;
+}
+document.addEventListener('click',e=>{
+  const add=e.target.closest('[data-add]');
+  if(add){cart[add.dataset.add]=(cart[add.dataset.add]||0)+1;refreshCart();return;}
+  if(e.target.closest('#startOverBtn')){startOver();return;}
+  const g=e.target.closest('[data-go]');
+  if(g&&isComplete()&&current==='home'&&(g.dataset.go==='store'||g.dataset.go==='food')){pokeStartOver();return;} // flow ends here for now
+  if(!g&&isComplete()&&current==='home'&&e.target.closest('#coffeeCard')){pokeStartOver();return;}
+  if(g){go(g.dataset.go,g.dataset.dir);return;}
+  if(e.target.closest('#storeRubies'))return;
+  if(e.target.closest('#sendOrder')){ if(count()===0){cart['espresso']=1;cart['cappuccino']=1;refreshCart();} go('status'); return;}
+});
+
+/* rubies carousel: sideways only, never up/down */
+document.querySelectorAll('.f-rubies .car').forEach(c=>c.addEventListener('scroll',()=>{if(c.scrollTop)c.scrollTop=0;},{passive:true}));
+
+/* ---------- end of flow: start over ---------- */
+function announce(msg){const s=document.getElementById('srStatus');s.textContent='';setTimeout(()=>{s.textContent=msg;},50);} // re-set so repeated messages are read again
+function pokeStartOver(){const p=document.getElementById('startOver');p.classList.remove('poke');void p.offsetWidth;p.classList.add('poke');setTimeout(()=>p.classList.remove('poke'),460);
+  announce('The demo has ended. Press Start over to play again.');
+  document.getElementById('startOverBtn').focus({preventScroll:true});}
+function startOver(){
+  coffeeRubies=1; Object.keys(cart).forEach(k=>delete cart[k]); ordered=false;
+  resetStatus(); refreshCart(); renderRubies();
+  const sc=document.querySelector('#home .scroll'); sc.scrollTo({top:0,behavior:'smooth'});
+  document.querySelector('.f-rubies .car').scrollLeft=0;
+  announce('Demo restarted. Coffee Lab has 1 ruby and your basket is empty.');
+  document.getElementById('coffeeCard').focus({preventScroll:true}); // the button disappears, so keep focus somewhere useful
+}
+refreshCart();
+const start=location.hash.slice(1);
+go(order.includes(start)?start:'home');
+
+/* ---------- drag-to-scroll for every carousel (mouse); touch scrolls natively ---------- */
+document.querySelectorAll('.hscroll').forEach(el=>{
+  let down=false,sx=0,sl=0,moved=false;
+  el.addEventListener('pointerdown',e=>{if(e.pointerType!=='mouse')return;down=true;moved=false;sx=e.clientX;sl=el.scrollLeft;});
+  window.addEventListener('pointermove',e=>{if(!down)return;const dx=e.clientX-sx;if(Math.abs(dx)>4){moved=true;el.classList.add('dragging');}el.scrollLeft=sl-dx;});
+  window.addEventListener('pointerup',()=>{if(!down)return;down=false;el.classList.remove('dragging');});
+  el.addEventListener('click',e=>{if(moved){e.stopPropagation();e.preventDefault();moved=false;}},true);
+});
+
+/* ---------- store rubies mini card: wobble on hover, follows a drag, then springs back ---------- */
+{const r=document.getElementById('storeRubies');let dragging=false,sx=0,sy=0;
+ const set=(x,y,rot)=>{r.style.transform=`translate(${x}px,${y}px) rotate(${rot}deg)`;};
+ r.addEventListener('pointerenter',e=>{if(dragging||e.pointerType!=='mouse')return;r.className=r.className.replace(/ ?(spring|hov)/g,'')+' hov';set(0,-2,0);});
+ r.addEventListener('pointermove',e=>{
+   if(dragging){const dx=e.clientX-sx,dy=e.clientY-sy;const k=v=>Math.sign(v)*Math.min(60,Math.abs(v)*.45);set(k(dx),k(dy),k(dx)/6);return;}
+   if(e.pointerType==='mouse'){const b=r.getBoundingClientRect();const fx=(e.clientX-b.left)/b.width-.5,fy=(e.clientY-b.top)/b.height-.5;set(fx*4,-2+fy*2,fx*1.5);}});
+ r.addEventListener('pointerleave',()=>{if(dragging)return;r.classList.remove('hov');r.classList.add('spring');set(0,0,0);});
+ r.addEventListener('pointerdown',e=>{dragging=true;sx=e.clientX;sy=e.clientY;r.classList.remove('spring','hov');r.classList.add('shaking');r.setPointerCapture(e.pointerId);});
+ const release=()=>{if(!dragging)return;dragging=false;r.classList.remove('shaking');r.classList.add('spring');set(0,0,0);};
+ r.addEventListener('pointerup',release);r.addEventListener('pointercancel',release);}
+</script>
+</body>
+</html>
