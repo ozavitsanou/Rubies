@@ -1,0 +1,10 @@
+<svg preserveAspectRatio="none" overflow="visible" style="display: block;" width="54" height="14" viewBox="0 0 54 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g id=".pager">
+<rect width="54" height="14" rx="7" fill="white"/>
+<circle id="dot" cx="7" cy="7" r="3" fill="#D9D9D9"/>
+<circle id="dot_2" cx="17" cy="7" r="3" fill="#D9D9D9"/>
+<circle id="dot-selected" cx="27" cy="7" r="3" fill="#12B380"/>
+<circle id="dot_3" cx="37" cy="7" r="3" fill="#D9D9D9"/>
+<circle id="dot_4" cx="47" cy="7" r="3" fill="#D9D9D9"/>
+</g>
+</svg>
