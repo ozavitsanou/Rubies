@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Order a coffee – interactive prototype</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
 <style>
 /* ===== Design tokens – mirrored 1:1 from the Figma "Mapped" variable collection ===== */
 :root{
@@ -349,9 +349,45 @@ body{position:relative}
 .about-sheet[hidden]{display:none}
 .about-sheet .x{position:absolute;right:8px;top:8px;width:32px;height:32px;border:0;border-radius:50%;background:#f2f2f2;font-size:18px;line-height:1;cursor:pointer;color:#1a1a1a}
 .about-sheet h2{padding-right:36px}
+
+/* ---------- scratch card (Figma "Store – ruby stamp" 379:8257 scratch / 379:8688 revealed) ---------- */
+.scr{position:absolute;inset:0;z-index:40;overflow:hidden;touch-action:none;user-select:none;-webkit-user-select:none;cursor:none}
+.scr[hidden]{display:none}
+.scr-bg{position:absolute;inset:0;background:rgba(112,39,39,.37);-webkit-backdrop-filter:blur(8.05px);backdrop-filter:blur(8.05px)} /* Frame 26: fill #702727 37% + background blur 16.1 */
+.scr-rays{position:absolute;left:-2px;top:0;width:384px;height:825px;max-width:none;pointer-events:none;transform-origin:190px 324.6px;animation:scrRays 14s linear infinite} /* Frame 27: 10 blurred rays */
+@keyframes scrRays{to{transform:rotate(36deg)}}
+.scr-face,.scr-cv{position:absolute;left:52px;top:151px;width:268px;height:292px;border-radius:16px}
+.scr-face{background:#fff;overflow:hidden;box-shadow:-22px -14px 44px 0 rgba(248,242,197,.5),14px -21px 25px 0 rgba(248,242,197,.41)} /* Frame 30 */
+.scr-face .glow{position:absolute;left:23px;top:52px;width:224px;height:224px;max-width:none;opacity:0} /* Ellipse 9 */
+.scr-cv{outline:none}
+.scr-cv:focus-visible{outline:3px solid #1a1a1a;outline-offset:3px;box-shadow:0 0 0 3px #fff}
+.scr-ruby{position:absolute;left:117px;top:245px;width:140px;height:140px;max-width:none;pointer-events:none;transform-origin:50% 50%} /* Diamond Streamline Cyber */
+.scr-spark{position:absolute;width:18px;height:18px;max-width:none;pointer-events:none;opacity:0}
+.scr-coin{position:absolute;left:118px;top:473px;width:138px;height:138px;max-width:none;pointer-events:none;z-index:3;filter:drop-shadow(0 6px 10px rgba(0,0,0,.18))} /* euro coin – shiny */
+@media (prefers-reduced-motion:reduce){.scr-rays{animation:none}}
+
+/* ---------- TEMPORARY passcode gate (remove this block, the #gate markup and the gate script to take it out) ---------- */
+#gate{position:fixed;inset:0;z-index:1000;display:flex;align-items:center;justify-content:center;background:#e9e9ec;padding:16px}
+#gate[hidden]{display:none}
+#gate form{width:100%;max-width:320px;background:#fff;border-radius:16px;padding:24px;display:flex;flex-direction:column;gap:12px;box-shadow:0 10px 40px rgba(0,0,0,.12)}
+#gate h1{margin:0;font:700 20px/1.3 var(--font-family);color:#1a1a1a}
+#gate label{font:400 14px/1.4 var(--font-family);color:#555}
+#gate input{font:400 16px var(--font-family);padding:12px 14px;border:1px solid #c8c8c8;border-radius:10px;outline:none}
+#gate input:focus-visible{border-color:#1a1a1a;box-shadow:0 0 0 2px #1a1a1a}
+#gate button{font:700 15px var(--font-family);padding:12px;border:0;border-radius:10px;background:#dd1313;color:#fff;cursor:pointer}
+#gate button:focus-visible{outline:3px solid #1a1a1a;outline-offset:3px}
+#gate .err{min-height:20px;margin:0;font:400 14px var(--font-family);color:#c00}
 </style>
 </head>
 <body>
+<!-- TEMPORARY passcode gate -->
+<div id="gate"><form id="gateForm" novalidate>
+  <h1>Enter passcode</h1>
+  <label for="gateInput">This prototype is a work in progress. Type the passcode to continue.</label>
+  <input id="gateInput" type="text" autocomplete="off" autocapitalize="off" spellcheck="false" aria-describedby="gateErr">
+  <button type="submit">Continue</button>
+  <p class="err" id="gateErr" role="alert"></p>
+</form></div>
 <aside class="about-side" aria-labelledby="aboutSideTitle">
   <h2 id="aboutSideTitle">About this prototype</h2>
   <p>A static, dependency-free HTML prototype of the Rubies loyalty flow: earn a ruby with every order from a store, see your progress, and unlock a coupon.</p>
@@ -502,6 +538,18 @@ body{position:relative}
         
       </div>
     </div>
+    <!-- scratch card step: shown after "Your order has been confirmed", before the stamp card drops -->
+    <div class="scr" id="scr" hidden>
+      <div class="scr-bg"></div>
+      <img class="scr-rays" src="assets/fig/scratch-rays.svg" alt="">
+      <div class="scr-face" id="scrFace"><img class="glow" id="scrGlow" src="assets/fig/scratch-ruby-glow.svg" alt=""></div>
+      <img class="scr-ruby" id="scrRuby" src="assets/fig/scratch-ruby.svg" alt="">
+      <img class="scr-spark" src="assets/fig/spark.svg" alt="" style="left:128px;top:250px">
+      <img class="scr-spark" src="assets/fig/spark.svg" alt="" style="left:236px;top:282px;width:11px;height:11px">
+      <img class="scr-spark" src="assets/fig/spark.svg" alt="" style="left:140px;top:350px;width:8px;height:8px">
+      <canvas class="scr-cv" id="scrCv" width="268" height="292" tabindex="0" role="button" aria-label="Scratch card. Scratch it with the coin, or press Enter to reveal your prize"></canvas>
+      <img class="scr-coin" id="scrCoin" src="assets/fig/scratch-coin.png" alt="">
+    </div>
   </section>
 
 </div>
@@ -636,8 +684,86 @@ track(spark,'scale',[[7.35,.1,C],[7.6,2,'EASE_OUT'],[7.95,1,'EASE_IN_AND_OUT']],
 holdShift=true;
 let stampFix=0; // safety net for iPhone Safari: once the stamp has landed, a static stamp also fills the slot in the row
 function fillStampSlot(){const slot=document.getElementById('aCardRow').children[stampSlot]; if(slot&&!slot.querySelector('img'))slot.innerHTML='<img src="assets/fig/stamp-ruby-30.svg" alt="Ruby collected">';}
-function playStatus(){clearTimeout(stampFix);anims.forEach(a=>{a.currentTime=0;a.play();});stampFix=setTimeout(fillStampSlot,6150);}
-function resetStatus(){clearTimeout(stampFix);anims.forEach(a=>{a.pause();a.currentTime=0;});}
+const SCR_AT=3.6; // the timeline pauses here (order confirmed) for the scratch card, then carries on with the stamp card drop
+let scrTimer=0;
+function playStatus(){clearTimeout(stampFix);clearTimeout(scrTimer);scratch.reset();anims.forEach(a=>{a.currentTime=0;a.play();});
+  scrTimer=setTimeout(()=>{anims.forEach(a=>{a.pause();a.currentTime=SCR_AT*1000;});scratch.show();},SCR_AT*1000);}
+function resumeStatus(){anims.forEach(a=>a.play());stampFix=setTimeout(fillStampSlot,(6.15-SCR_AT)*1000);}
+function resetStatus(){clearTimeout(stampFix);clearTimeout(scrTimer);scratch.reset();anims.forEach(a=>{a.pause();a.currentTime=0;});}
+
+/* ---------- scratch card: the coin is the cursor; two swipes reveal the ruby, which orbits, shines and flies onto the stamp card ---------- */
+const scratch=(()=>{
+  const el=document.getElementById('scr'), cv=document.getElementById('scrCv'), ctx=cv.getContext('2d'), coin=document.getElementById('scrCoin'),
+        face=document.getElementById('scrFace'), glow=document.getElementById('scrGlow'), ruby=document.getElementById('scrRuby'),
+        sparks=[...el.querySelectorAll('.scr-spark')], phone=document.getElementById('phone');
+  const W=268,H=292, CARD={x:52,y:151}, COIN0={x:118,y:473}, BRUSH=84, NEED=420; // NEED: scratched path ≈ two swipes across the card
+  const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const pat=new Image(); pat.src='assets/fig/scratch-card-pattern.png';
+  const logo=new Image(); logo.src='assets/logo-coffee-lab.jpg';
+  let last=null, path=0, moves=0, state='off', timers=[], live=[];
+  const later=(f,ms)=>timers.push(setTimeout(f,ms));
+  function wrap(text,maxW){const words=text.split(' '),lines=[];let line='';
+    for(const w of words){const t=line?line+' '+w:w; if(ctx.measureText(t).width>maxW&&line){lines.push(line);line=w;}else line=t;} lines.push(line); return lines;}
+  async function paint(){ // card face of Figma Frame 30: white, food pattern at 20%, store logo, frosted label
+    const dpr=Math.max(1,Math.min(3,window.devicePixelRatio||1)); cv.width=W*dpr; cv.height=H*dpr; ctx.setTransform(dpr,0,0,dpr,0,0);
+    ctx.globalCompositeOperation='source-over'; ctx.clearRect(0,0,W,H); ctx.fillStyle='#fff'; ctx.fillRect(0,0,W,H);
+    try{await Promise.all([pat.decode(),logo.decode(),document.fonts.load('700 16px Inter')]);}catch(e){}
+    if(pat.naturalWidth)ctx.drawImage(pat,0,0,W,H);
+    if(logo.naturalWidth){const sz=180.45,x=44.31,y=17.87,r=Math.min(logo.naturalWidth,logo.naturalHeight);ctx.drawImage(logo,(logo.naturalWidth-r)/2,(logo.naturalHeight-r)/2,r,r,x,y,sz,sz);}
+    ctx.fillStyle='rgba(255,255,255,.51)'; ctx.fillRect(1,231,267,58);
+    ctx.font='700 16px Inter, Roboto, sans-serif'; ctx.fillStyle='#5d5d5d'; ctx.textAlign='center'; ctx.textBaseline='middle';
+    const lines=wrap('SCRATCH THE CARD TO REVEAL YOUR PRICE',247), lh=19.4, top=231+29-(lines.length-1)*lh/2;
+    lines.forEach((l,i)=>ctx.fillText(l,134.5,top+i*lh));
+  }
+  function local(e){const r=phone.getBoundingClientRect(), k=phone.offsetWidth/r.width||1; return {x:(e.clientX-r.left)*k,y:(e.clientY-r.top)*k};}
+  function moveCoin(p){coin.style.left=(p.x-69)+'px'; coin.style.top=(p.y-69)+'px';}
+  function cleared(){const d=ctx.getImageData(0,0,cv.width,cv.height).data;let n=0,c=0;for(let i=3;i<d.length;i+=64){n++;if(d[i]<20)c++;}return c/n;}
+  function scratchTo(p){
+    const q={x:p.x-CARD.x,y:p.y-CARD.y};
+    if(!(q.x>-30&&q.x<W+30&&q.y>-30&&q.y<H+30)){last=null;return;}
+    ctx.globalCompositeOperation='destination-out'; ctx.lineCap='round'; ctx.lineJoin='round'; ctx.lineWidth=BRUSH;
+    const a=last||q; ctx.beginPath(); ctx.moveTo(a.x,a.y); ctx.lineTo(q.x,q.y); ctx.stroke();
+    for(let i=0;i<3;i++){ctx.beginPath();ctx.arc(q.x+(Math.random()-.5)*BRUSH*.9,q.y+(Math.random()-.5)*BRUSH*.9,6+Math.random()*12,0,7);ctx.fill();} // ragged coin-scratch edge
+    if(last)path+=Math.hypot(q.x-last.x,q.y-last.y); last=q;
+    if(path>=NEED||(++moves%12===0&&cleared()>.5))reveal();
+  }
+  function onMove(e){if(state!=='scratch')return; const p=local(e); moveCoin(p); if(e.pointerType==='mouse'||e.buttons)scratchTo(p);} // mouse scratches on hover; touch while the finger is down
+  el.addEventListener('pointermove',onMove);
+  el.addEventListener('pointerdown',e=>{if(state!=='scratch')return; last=null; try{el.setPointerCapture(e.pointerId);}catch(_){} onMove(e);});
+  el.addEventListener('pointerup',()=>{last=null;});
+  el.addEventListener('pointerleave',()=>{last=null;});
+  cv.addEventListener('keydown',e=>{if(state==='scratch'&&(e.key==='Enter'||e.key===' ')){e.preventDefault();reveal();}});
+  const fade=(n,from,to,ms,extra)=>live.push(n.animate([{opacity:from},{opacity:to,...(extra||{})}],{duration:ms,easing:'ease-out',fill:'forwards'}));
+  function reveal(){ if(state!=='scratch')return; state='reveal';
+    announce('You found a ruby for your Coffee Lab stamp card.');
+    fade(cv,1,0,350,{transform:'scale(1.04)'}); fade(coin,1,0,300,{transform:'translateY(30px)'});
+    live.push(glow.animate([{opacity:0,transform:'scale(.7)'},{opacity:1,transform:'scale(1)'}],{duration:450,easing:'ease-out',fill:'forwards'}));
+    // the ruby pops, orbits and shines
+    live.push(ruby.animate([{scale:.86},{scale:1.12,offset:.35},{scale:1}],{duration:600,easing:'cubic-bezier(.3,1.4,.5,1)',fill:'forwards'}));
+    if(!reduce){const orb=[];for(let i=0;i<=16;i++){const t=i/16*Math.PI*2;orb.push({translate:`${(Math.sin(t)*10).toFixed(2)}px ${(6-Math.cos(t)*6).toFixed(2)}px`,rotate:`${(Math.sin(t*2)*6).toFixed(2)}deg`});}
+      live.push(ruby.animate(orb,{duration:1500,delay:250,iterations:2,easing:'ease-in-out'}));}
+    sparks.forEach((sp,i)=>live.push(sp.animate([{opacity:0,scale:.2},{opacity:1,scale:1.6,offset:.4},{opacity:.9,scale:1,offset:.7},{opacity:0,scale:.4}],{duration:900,delay:350+i*260,iterations:3,easing:'ease-out'})));
+    // then the white card and the backdrop fade away and the order timeline carries on (stamp card drops in)
+    later(()=>{state='fly-wait';
+      fade(face,1,0,350); fade(el.querySelector('.scr-bg'),1,0,500); fade(el.querySelector('.scr-rays'),1,0,500);
+      el.style.pointerEvents='none'; resumeStatus();
+      later(fly,(5.2-SCR_AT)*1000); // the stamp card has landed by now (drop 4.45 – 5.12 s)
+    },1400);
+  }
+  function fly(){ state='fly';
+    ruby.getAnimations().forEach(a=>{if(a.effect.getKeyframes().some(f=>f.translate||f.rotate))a.cancel();}); // stop the orbit first so we measure the resting spot
+    const tr=document.getElementById('aStampLayer').getBoundingClientRect(), pr=phone.getBoundingClientRect(), sc=pr.width/phone.offsetWidth||1;
+    const dx=(tr.left+15*sc-pr.left)/sc-(117+70), dy=(tr.top+15*sc-pr.top)/sc-(245+70), k=30/140;
+    live.push(ruby.animate([{translate:'0px 0px',scale:1,rotate:'0deg'},{translate:`${dx*.45}px ${dy*.45-40}px`,scale:.6,rotate:'-12deg',offset:.45},{translate:`${dx}px ${dy}px`,scale:k,rotate:'0deg'}],{duration:550,easing:'cubic-bezier(.45,0,.3,1)',fill:'forwards'}));
+    later(()=>fade(ruby,1,0,200),560);
+    later(()=>{el.hidden=true; state='done';},800);
+  }
+  function reset(){timers.forEach(clearTimeout);timers=[];live.forEach(a=>a.cancel());live=[];
+    el.hidden=true; el.style.pointerEvents=''; state='off'; path=0; moves=0; last=null; moveCoin({x:COIN0.x+69,y:COIN0.y+69});}
+  async function show(){reset(); await paint(); el.hidden=false; state='scratch'; cv.focus({preventScroll:true});
+    announce('Your order is confirmed. Scratch the card with the coin to reveal your prize, or press Enter.');}
+  return {show,reset,reveal,get state(){return state;}};
+})();
 
 
 /* ---------- rubies state: Coffee Lab starts with 1 of 5; every order stamps one more ---------- */
@@ -710,6 +836,7 @@ function go(id,dir){
   else {next.classList.add('left'); void next.offsetWidth; next.classList.remove('left');}
   next.classList.add('active');
   setTimeout(()=>{if(prev&&current!==prev.id){prev.style.transform='';prev.classList.remove('left')}},320);
+  if(current==='status'&&id!=='status')resetStatus();
   current=id; document.getElementById('phone').dataset.screen=id; if(id!=='home')toggleAbout(false);
   const sc=next.querySelector('.scroll'); if(sc&&!back&&id!=='food')sc.scrollTop=0;
   if(id==='status'){ordered=true;coffeeRubies=prepStatusCard();renderRubies();playStatus();Object.keys(cart).forEach(k=>delete cart[k]);refreshCart();} // order placed: empty the basket and menu selections for the next visit
@@ -781,5 +908,16 @@ document.querySelectorAll('.hscroll').forEach(el=>{
  const release=()=>{if(!dragging)return;dragging=false;r.classList.remove('shaking');r.classList.add('spring');set(0,0,0);};
  r.addEventListener('pointerup',release);r.addEventListener('pointercancel',release);}
 </script>
+<script>/* TEMPORARY passcode gate: plain check, nothing is encrypted; remembered for this browser tab only */
+(()=>{const g=document.getElementById('gate'),f=document.getElementById('gateForm'),inp=document.getElementById('gateInput'),err=document.getElementById('gateErr');
+ const rest=[document.getElementById('phone'),document.querySelector('.about-side')].filter(Boolean);
+ const open=()=>{g.hidden=true;rest.forEach(n=>n.inert=false);};
+ let ok=false;try{ok=sessionStorage.getItem('rubiesGate')==='1';}catch(e){}
+ if(ok){open();return;}
+ rest.forEach(n=>n.inert=true); inp.focus();
+ f.addEventListener('submit',e=>{e.preventDefault();
+   if(inp.value.trim().toLowerCase()==='wip'){try{sessionStorage.setItem('rubiesGate','1');}catch(_){}open();}
+   else{err.textContent='That passcode is not right. Try again.';inp.select();}});
+})();</script>
 </body>
 </html>
