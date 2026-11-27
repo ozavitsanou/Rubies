@@ -1,0 +1,25 @@
+<svg width="200" height="200" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+<!-- puffy two-tone circle behind the revealed ruby: soft drop shadow, top-left highlight, bottom-right shade -->
+<defs>
+  <radialGradient id="outer" cx="0.38" cy="0.32" r="0.75">
+    <stop offset="0" stop-color="#FFEFE2"/><stop offset="0.7" stop-color="#FFD8C2"/><stop offset="1" stop-color="#F9C3A8"/>
+  </radialGradient>
+  <radialGradient id="inner" cx="0.4" cy="0.35" r="0.7">
+    <stop offset="0" stop-color="#FFFFFF"/><stop offset="0.75" stop-color="#FFF4E9"/><stop offset="1" stop-color="#FDE4D2"/>
+  </radialGradient>
+  <linearGradient id="gloss" x1="0" y1="0" x2="0" y2="1">
+    <stop offset="0" stop-color="#FFFFFF" stop-opacity="0.85"/><stop offset="1" stop-color="#FFFFFF" stop-opacity="0"/>
+  </linearGradient>
+  <filter id="drop" x="-30%" y="-30%" width="160%" height="170%">
+    <feDropShadow dx="0" dy="8" stdDeviation="8" flood-color="#C9714F" flood-opacity="0.22"/>
+  </filter>
+  <filter id="innerShade" x="-20%" y="-20%" width="140%" height="140%">
+    <feDropShadow dx="0" dy="3" stdDeviation="2.5" flood-color="#D9825F" flood-opacity="0.28"/>
+  </filter>
+</defs>
+<circle cx="100" cy="94" r="80" fill="url(#outer)" filter="url(#drop)"/>
+<circle cx="100" cy="94" r="80" stroke="#FFFFFF" stroke-opacity="0.7" stroke-width="2"/>
+<circle cx="100" cy="94" r="58" fill="url(#inner)" filter="url(#innerShade)"/>
+<ellipse cx="78" cy="52" rx="30" ry="12" transform="rotate(-28 78 52)" fill="url(#gloss)"/>
+<ellipse cx="146" cy="56" rx="5" ry="3.2" transform="rotate(40 146 56)" fill="#FFFFFF" fill-opacity="0.8"/>
+</svg>
