@@ -380,10 +380,11 @@ body{position:relative}
 @keyframes scrSun{to{transform:rotate(360deg)}}
 .scr-face,.scr-cv{position:absolute;left:52px;top:151px;width:268px;height:292px;border-radius:16px}
 .scr-face{background:#fff;overflow:hidden;box-shadow:-22px -14px 44px 0 rgba(248,242,197,.5),14px -21px 25px 0 rgba(248,242,197,.41)} /* Frame 30 */
+.scr-pink{position:absolute;left:-88px;top:205px;width:367px;height:396px;max-width:none;pointer-events:none;opacity:0;clip-path:inset(0 0 158px 140px round 0 0 0 16px)} /* clipped to the card, like the stamp cards */ /* the stamp cards' pink-red glow, from the card's bottom-left corner behind the ruby */
 .scr-glow{position:absolute;left:75px;top:203px;pointer-events:none;width:224px;height:224px;max-width:none;opacity:0} /* Ellipse 9 */
 .scr-cv{outline:none}
 .scr-cv:focus-visible{outline:3px solid #1a1a1a;outline-offset:3px;box-shadow:0 0 0 3px #fff}
-.scr-ruby{position:absolute;left:117px;top:245px;width:140px;height:140px;max-width:none;pointer-events:none;transform-origin:50% 50%} /* Diamond Streamline Cyber */
+.scr-ruby{position:absolute;left:117px;top:245px;width:140px;height:140px;max-width:none;pointer-events:none;transform-origin:50% 50%;filter:drop-shadow(0 6px 10px rgba(215,73,140,.22))} /* very light pink shadow */ /* Diamond Streamline Cyber */
 .scr-spark{position:absolute;width:18px;height:18px;max-width:none;pointer-events:none;opacity:0}
 .scr-coin{position:absolute;left:118px;top:473px;width:138px;height:138px;max-width:none;pointer-events:none;z-index:3;filter:drop-shadow(0 6px 10px rgba(0,0,0,.18))} /* euro coin – shiny */
 @media (prefers-reduced-motion:reduce){.scr-rays,.scr-sun{animation:none}}
@@ -567,6 +568,7 @@ body{flex-direction:column;gap:14px;padding:12px 0}
       <div class="scr-sun"></div>
       <img class="scr-rays" src="assets/fig/scratch-rays.svg" alt="">
       <div class="scr-face" id="scrFace"></div>
+      <img class="scr-pink" id="scrPink" src="assets/fig/card-glow-ellipse.svg" alt="">
       <img class="scr-glow" id="scrGlow" src="assets/fig/scratch-ruby-glow.svg" alt="">
       <img class="scr-ruby" id="scrRuby" src="assets/fig/scratch-ruby.svg" alt="">
       <img class="scr-spark" src="assets/fig/spark.svg" alt="" style="left:128px;top:250px">
@@ -707,19 +709,41 @@ holdShift=false; // the spark keeps its own timing (fades just before the hold)
 track(spark,'opacity',[[7.35,0,C],[7.43,1,'EASE_OUT'],[7.95,1,C],[8.1,0,'EASE_OUT']],v=>v);
 track(spark,'scale',[[7.35,.1,C],[7.6,2,'EASE_OUT'],[7.95,1,'EASE_IN_AND_OUT']],v=>v);
 holdShift=true;
-let stampFix=0; // safety net for iPhone Safari: once the stamp has landed, a static stamp also fills the slot in the row
-function fillStampSlot(){const slot=document.getElementById('aCardRow').children[stampSlot]; if(slot&&!slot.querySelector('img'))slot.innerHTML='<img src="assets/fig/stamp-ruby-30.svg" alt="Ruby collected">';}
+function fillStampSlot(){ // safety net for iPhone Safari: a static stamp also fills the slot once the stamp has landed
+  const slot=document.getElementById('aCardRow').children[stampSlot]; if(slot&&!slot.querySelector('img'))slot.innerHTML='<img src="assets/fig/stamp-ruby-30.svg" alt="Ruby collected">';}
 const SCR_AT=3.6; // the timeline pauses here (order confirmed) for the scratch card, then carries on with the stamp card drop
-let scrTimer=0;
-function playStatus(){clearTimeout(stampFix);clearTimeout(scrTimer);scratch.reset();anims.forEach(a=>{a.currentTime=0;a.play();});
-  scrTimer=setTimeout(()=>{anims.forEach(a=>{a.pause();a.currentTime=SCR_AT*1000;});scratch.show();},SCR_AT*1000);}
-function resumeStatus(){anims.forEach(a=>a.play());stampFix=setTimeout(fillStampSlot,(6.15-SCR_AT)*1000);}
-function resetStatus(){clearTimeout(stampFix);clearTimeout(scrTimer);scratch.reset();anims.forEach(a=>{a.pause();a.currentTime=0;});}
+/* One clock drives every step. All animations stay paused and are moved to the same time each frame, so they can never
+   drift apart. The clock only moves while the page is on screen: on phones, switching apps or locking the screen
+   used to let the animations run on while the timers stood still, so the map showed before the scratch card. */
+let clock=0, playing=false, lastNow=0, rafId=0, cues=[], runId=0;
+function setClock(t){clock=t; const ms=t*1000; anims.forEach(a=>{a.currentTime=ms;});}
+function tick(now){
+  if(!playing)return;
+  let t=Math.min(TOTAL,clock+Math.min(now-lastNow,50)/1000); lastNow=now; // at most 50 ms per frame: no jumps after a pause
+  for(const c of cues){ if(c.done||t<c.t)continue; c.done=true;
+    if(c.hold){t=c.t; playing=false; setClock(t); c.fn(); return;} // stop here until resumeStatus()
+    c.fn(); }
+  setClock(t);
+  if(t>=TOTAL){playing=false; return;}
+  rafId=requestAnimationFrame(tick);
+}
+function runClock(){if(playing)return; playing=true; lastNow=performance.now(); rafId=requestAnimationFrame(tick);}
+function stopClock(){playing=false; cancelAnimationFrame(rafId);}
+const statusImgs=()=>[document.getElementById('heroImg'),document.querySelector('#mapImg img'),document.getElementById('aStamp'),document.getElementById('scrRuby')];
+function imagesReady(){ // start only once the house, map and ruby images are ready (slow mobile data), or after 4 s at most
+  const wait=statusImgs().map(i=>i.complete&&i.naturalWidth?Promise.resolve():(i.decode?i.decode():Promise.resolve()).catch(()=>{}));
+  return Promise.race([Promise.all(wait),new Promise(r=>setTimeout(r,4000))]);
+}
+function playStatus(){stopClock(); scratch.reset(); setClock(0);
+  cues=[{t:SCR_AT,hold:true,fn:()=>scratch.show()},{t:6.15,fn:fillStampSlot}];
+  const id=++runId; imagesReady().then(()=>{if(id===runId&&current==='status')runClock();});}
+function resumeStatus(){runClock();}
+function resetStatus(){runId++; stopClock(); scratch.reset(); setClock(0);}
 
 /* ---------- scratch card: the coin is the cursor; two swipes reveal the ruby, which orbits, shines and flies onto the stamp card ---------- */
 const scratch=(()=>{
   const el=document.getElementById('scr'), cv=document.getElementById('scrCv'), ctx=cv.getContext('2d'), coin=document.getElementById('scrCoin'),
-        face=document.getElementById('scrFace'), glow=document.getElementById('scrGlow'), ruby=document.getElementById('scrRuby'),
+        face=document.getElementById('scrFace'), glow=document.getElementById('scrGlow'), pink=document.getElementById('scrPink'), ruby=document.getElementById('scrRuby'),
         sparks=[...el.querySelectorAll('.scr-spark')], phone=document.getElementById('phone');
   const W=268,H=292, CARD={x:52,y:151}, COIN0={x:118,y:473}, BRUSH=64; // a wide coin scratch so the card clears faster
   const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -761,7 +785,7 @@ const scratch=(()=>{
   const fade=(n,from,to,ms,extra)=>live.push(n.animate([{opacity:from},{opacity:to,...(extra||{})}],{duration:ms,easing:'ease-out',fill:'forwards'}));
   function reveal(){ if(state!=='scratch')return; state='reveal';
     announce('You found a ruby for your Coffee Lab stamp card.');
-    fade(cv,1,0,350); fade(coin,1,0,300,{transform:'translateY(30px)'});
+    fade(cv,1,0,350); fade(coin,1,0,300,{transform:'translateY(30px)'}); fade(pink,0,1,450); // pink glow comes in as the card clears
     // the white card disappears; the sun rays keep turning behind the ruby, with its glow
     later(()=>fade(face,1,0,400),250);
     // the ruby stays in place and beats like a heart
@@ -776,7 +800,7 @@ const scratch=(()=>{
   }
   function fly(){ state='fly';
     ruby.getAnimations().forEach(a=>a.cancel()); // stop the heartbeat
-    fade(glow,1,0,250); fade(el.querySelector('.scr-rays'),1,0,300); fade(el.querySelector('.scr-sun'),1,0,300);
+    fade(glow,1,0,250); fade(pink,1,0,250); fade(el.querySelector('.scr-rays'),1,0,300); fade(el.querySelector('.scr-sun'),1,0,300);
     const tr=document.getElementById('aStampLayer').getBoundingClientRect(), pr=phone.getBoundingClientRect(), sc=pr.width/phone.offsetWidth||1;
     const dx=(tr.left+15*sc-pr.left)/sc-(117+70), dy=(tr.top+15*sc-pr.top)/sc-(245+70), k=30/140;
     live.push(ruby.animate([{translate:'0px 0px',scale:1,rotate:'0deg'},{translate:`${dx*.45}px ${dy*.45-40}px`,scale:.6,rotate:'-12deg',offset:.45},{translate:`${dx}px ${dy}px`,scale:k,rotate:'0deg'}],{duration:550,easing:'cubic-bezier(.45,0,.3,1)',fill:'forwards'}));
