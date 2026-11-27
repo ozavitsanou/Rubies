@@ -380,7 +380,6 @@ body{position:relative}
 @keyframes scrSun{to{transform:rotate(360deg)}}
 .scr-face,.scr-cv{position:absolute;left:52px;top:151px;width:268px;height:292px;border-radius:16px}
 .scr-face{background:#fff;overflow:hidden;box-shadow:-22px -14px 44px 0 rgba(248,242,197,.5),14px -21px 25px 0 rgba(248,242,197,.41)} /* Frame 30 */
-.scr-pink{position:absolute;left:-88px;top:205px;width:367px;height:396px;max-width:none;pointer-events:none;opacity:0;clip-path:inset(0 0 158px 140px round 0 0 0 16px)} /* clipped to the card, like the stamp cards */ /* the stamp cards' pink-red glow, from the card's bottom-left corner behind the ruby */
 .scr-glow{position:absolute;left:75px;top:203px;pointer-events:none;width:224px;height:224px;max-width:none;opacity:0} /* Ellipse 9 */
 .scr-cv{outline:none}
 .scr-cv:focus-visible{outline:3px solid #1a1a1a;outline-offset:3px;box-shadow:0 0 0 3px #fff}
@@ -568,7 +567,6 @@ body{flex-direction:column;gap:14px;padding:12px 0}
       <div class="scr-sun"></div>
       <img class="scr-rays" src="assets/fig/scratch-rays.svg" alt="">
       <div class="scr-face" id="scrFace"></div>
-      <img class="scr-pink" id="scrPink" src="assets/fig/card-glow-ellipse.svg" alt="">
       <img class="scr-glow" id="scrGlow" src="assets/fig/scratch-ruby-glow.svg" alt="">
       <img class="scr-ruby" id="scrRuby" src="assets/fig/scratch-ruby.svg" alt="">
       <img class="scr-spark" src="assets/fig/spark.svg" alt="" style="left:128px;top:250px">
@@ -743,7 +741,7 @@ function resetStatus(){runId++; stopClock(); scratch.reset(); setClock(0);}
 /* ---------- scratch card: the coin is the cursor; two swipes reveal the ruby, which orbits, shines and flies onto the stamp card ---------- */
 const scratch=(()=>{
   const el=document.getElementById('scr'), cv=document.getElementById('scrCv'), ctx=cv.getContext('2d'), coin=document.getElementById('scrCoin'),
-        face=document.getElementById('scrFace'), glow=document.getElementById('scrGlow'), pink=document.getElementById('scrPink'), ruby=document.getElementById('scrRuby'),
+        face=document.getElementById('scrFace'), glow=document.getElementById('scrGlow'), ruby=document.getElementById('scrRuby'),
         sparks=[...el.querySelectorAll('.scr-spark')], phone=document.getElementById('phone');
   const W=268,H=292, CARD={x:52,y:151}, COIN0={x:118,y:473}, BRUSH=64; // a wide coin scratch so the card clears faster
   const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -785,7 +783,7 @@ const scratch=(()=>{
   const fade=(n,from,to,ms,extra)=>live.push(n.animate([{opacity:from},{opacity:to,...(extra||{})}],{duration:ms,easing:'ease-out',fill:'forwards'}));
   function reveal(){ if(state!=='scratch')return; state='reveal';
     announce('You found a ruby for your Coffee Lab stamp card.');
-    fade(cv,1,0,350); fade(coin,1,0,300,{transform:'translateY(30px)'}); fade(pink,0,1,450); // pink glow comes in as the card clears
+    fade(cv,1,0,350); fade(coin,1,0,300,{transform:'translateY(30px)'});
     // the white card disappears; the sun rays keep turning behind the ruby, with its glow
     later(()=>fade(face,1,0,400),250);
     // the ruby stays in place and beats like a heart
@@ -800,7 +798,7 @@ const scratch=(()=>{
   }
   function fly(){ state='fly';
     ruby.getAnimations().forEach(a=>a.cancel()); // stop the heartbeat
-    fade(glow,1,0,250); fade(pink,1,0,250); fade(el.querySelector('.scr-rays'),1,0,300); fade(el.querySelector('.scr-sun'),1,0,300);
+    fade(glow,1,0,250); fade(el.querySelector('.scr-rays'),1,0,300); fade(el.querySelector('.scr-sun'),1,0,300);
     const tr=document.getElementById('aStampLayer').getBoundingClientRect(), pr=phone.getBoundingClientRect(), sc=pr.width/phone.offsetWidth||1;
     const dx=(tr.left+15*sc-pr.left)/sc-(117+70), dy=(tr.top+15*sc-pr.top)/sc-(245+70), k=30/140;
     live.push(ruby.animate([{translate:'0px 0px',scale:1,rotate:'0deg'},{translate:`${dx*.45}px ${dy*.45-40}px`,scale:.6,rotate:'-12deg',offset:.45},{translate:`${dx}px ${dy}px`,scale:k,rotate:'0deg'}],{duration:550,easing:'cubic-bezier(.45,0,.3,1)',fill:'forwards'}));
