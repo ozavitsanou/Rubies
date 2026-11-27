@@ -260,6 +260,7 @@ img{display:block}
 .hc .srow{background:#fff;display:flex;gap:8px;align-items:center;justify-content:center;padding:8px 8px 12px}
 .hc .hs{position:relative;width:32px;height:32px;flex:none}
 .hc .hs img{position:absolute;max-width:none}
+.hc .hs .num{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font:700 16px/1 var(--font-family);color:#cbcbcb} /* slot number in place of the old X */
 .hc .blk{position:relative;height:52px;width:280px;overflow:hidden;border-radius:0 0 16px 16px}
 .hc .blk img{position:absolute;max-width:none}
 .hc .blk .bg{left:.42px;top:0;width:279.58px;height:52px}
@@ -794,7 +795,7 @@ const scratch=(()=>{
 const COFFEE_SLOTS=5; let coffeeRubies=1;
 const ORD=['first','second','third','fourth','fifth'];
 function stampRow(el,have,slots,skip){ // Figma .Ruby stamp for collected rubies, numbered placeholders for the rest
-  if(el.closest('.hc')){ el.innerHTML=Array.from({length:slots},(_,i)=>i<have?`<span class="hs"><img src="assets/fig/stamp-ruby-30.svg" alt="Ruby collected" style="inset:0;width:32px;height:32px"></span>`:`<span class="hs"><img src="assets/fig/hm-stamp-placeholder.svg" alt="" style="inset:0;width:32px;height:32px"></span>`).join(''); return; } // Home cards: Figma 426:25048
+  if(el.closest('.hc')){ el.innerHTML=Array.from({length:slots},(_,i)=>i<have?`<span class="hs"><img src="assets/fig/stamp-ruby-30.svg" alt="Ruby collected" style="inset:0;width:32px;height:32px"></span>`:`<span class="hs"><img src="assets/fig/hm-stamp-placeholder.svg" alt="" style="inset:0;width:32px;height:32px"><span class="num">${i+1}</span></span>`).join(''); return; } // Home cards: Figma 426:25048
   el.innerHTML=Array.from({length:slots},(_,i)=>i<have?`<span class="st-slot"><img src="assets/fig/stamp-ruby-30.svg" alt="Ruby collected"></span>`
     :i===skip?`<span class="st-slot"></span>`:`<span class="st-slot"><img src="assets/fig/stamp-placeholder.svg" alt=""><span class="num">${i+1}</span></span>`).join('');
 }
