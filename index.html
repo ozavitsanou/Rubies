@@ -237,27 +237,40 @@ img{display:block}
 .f-tile img{position:absolute;top:0;height:100%;left:50%;transform:translateX(-50%);max-width:none}
 /* Your Rubies and coupons (181:7606) */
 .f-rubies{padding:8px 0 0;width:374px}
-.f-rubies .sec{background:#f4f4f4;height:211px;border-radius:12px;padding:16px 16px 24px;display:flex;flex-direction:column;gap:16px;position:relative;isolation:isolate}
+.f-rubies .sec{background:#f4f4f4;height:258px;box-sizing:border-box;border-radius:12px;padding:16px 16px 24px;display:flex;flex-direction:column;gap:16px;position:relative;isolation:isolate}
 .f-rubies .hd{display:flex;justify-content:space-between;padding:8px 0;position:relative;z-index:3}
 .f-rubies .hd p{font:600 16px/1.4 var(--sds-font);color:var(--sds-text-default)}
-.f-rubies .gems{position:absolute;left:273px;top:-33px;width:73.11px;height:71px}
-.f-rubies .car{display:flex;gap:16px;align-items:center;position:relative;z-index:2;overflow-x:auto;overflow-y:hidden;overscroll-behavior-y:none;touch-action:pan-x pan-y;scrollbar-width:none;margin:-6px -16px -6px;padding:6px 16px 12px;flex:none}
+.f-rubies .gems{position:absolute;left:278px;top:-33px;width:73.11px;height:71px}
+.f-rubies .car{display:flex;gap:16px;align-items:center;position:relative;z-index:2;overflow-x:auto;overflow-y:hidden;overscroll-behavior-y:none;touch-action:pan-x pan-y;scrollbar-width:none;margin:1px -16px -8px;padding:0 12px 8px;flex:none} /* cards at x12 y71 */
 .f-rubies .car::-webkit-scrollbar{display:none}
-.f-rubies .grad{position:absolute;inset:0;width:376px;border-radius:8px;overflow:hidden;z-index:1;pointer-events:none}
+.f-rubies .grad{position:absolute;inset:0;border-radius:8px;overflow:hidden;z-index:1;pointer-events:none}
 .f-rubies .grad img{position:absolute;max-width:none}
-.rc{flex:0 0 209px;display:flex;flex-direction:column;filter:drop-shadow(0 4px 2px rgba(12,12,13,.1)) drop-shadow(0 4px 2px rgba(12,12,13,.05));border:0;padding:0;background:none;text-align:left;cursor:pointer}
-.rc.stamp{background:linear-gradient(180deg,#ffefef 57.541%,#fff);border-radius:12px} /* Figma .Rewards-card/stamps */
-.rc .top{background:#fff;border-radius:12px;padding:12px 12px 8px;display:flex;gap:8px;align-items:flex-start}
-.rc.voucher .top{border-radius:12px 12px 8px 8px}
-.rc .top img{width:40px;height:40px;flex:none}
-.rc .inf{display:flex;flex-direction:column;font:400 12px/18px var(--font-family)}
-.rc .inf .n{font-weight:700;color:var(--text-primary)} .rc .inf .r{color:var(--rating-default)} .rc .inf .m{color:var(--text-secondary)}
-.rc .rubies{padding:12px;display:flex;justify-content:center}
-.rc .rubies .row{display:flex;gap:8px;padding:0 3px}
-.rc .rubies img{width:24px;height:24px}
+/* Home cards use the Rewards card designs (415:22814 stamps / 415:22815 coupon) */
+.hc{flex:0 0 280px;width:280px;display:flex;flex-direction:column;border:0;padding:0;background:none;border-radius:16px;overflow:hidden;filter:drop-shadow(0 4px 2px rgba(12,12,13,.1)) drop-shadow(0 4px 2px rgba(12,12,13,.05));text-align:left;cursor:pointer;scroll-snap-align:start}
+.hc .cr,.hc .cover,.hc .blk{display:block}
+.hc .cr{background:#fff;padding:8px 8px 4px;border-radius:12px 12px 0 0}
+.hc.cp .cr{border-radius:12px 12px 6px 6px}
+.hc .cover{position:relative;height:102px;border-radius:8px;overflow:hidden}
+.hc .cover>img{width:100%;height:100%;object-fit:cover}
+.hc .badge{position:absolute;left:4px;top:4px;display:flex;align-items:center;gap:4px;padding:4px 8px;border-radius:8px 2px 12px 2px;background:rgba(255,255,255,.71);-webkit-backdrop-filter:blur(5.3px);backdrop-filter:blur(5.3px)}
+.hc .badge .lg{width:24px;height:24px;border:1px solid #efefef;border-radius:4px 1px 4px 1px;overflow:hidden;background:#fff;flex:none}
+.hc .badge .lg img{width:100%;height:100%;object-fit:cover}
+.lg img[src$="logo-roma.svg"]{transform:scale(1.42)} /* round logo → fill the 4/1/4/1 tile like the others */
+.hc .badge b{font:700 14px/21px var(--font-family);color:var(--text-primary);white-space:nowrap}
+.hc .srow{background:#fff;display:flex;gap:8px;align-items:center;justify-content:center;padding:8px 8px 12px}
+.hc .hs{position:relative;width:32px;height:32px;flex:none}
+.hc .hs img{position:absolute;max-width:none}
+.hc .blk{position:relative;height:52px;width:280px;overflow:hidden;border-radius:0 0 16px 16px}
+.hc .blk img{position:absolute;max-width:none}
+.hc .blk .bg{left:.42px;top:0;width:279.58px;height:52px}
+.hc .blk .sl{mix-blend-mode:soft-light}
+.hc .blk .ov{mix-blend-mode:overlay}
+.hc .blk .w{position:absolute;left:0;right:0;top:50%;transform:translateY(-50%);height:28px;padding:0 8px;display:flex;gap:11.532px;align-items:center;justify-content:center}
+.hc .blk .w span{position:relative;flex:none}
+.hc:focus-visible{outline:3px solid #1a1a1a;outline-offset:-3px}
 /* Figma .Ruby stamp (299:6577) + numbered placeholder slots, 30x30, gap 8 */
 .st-slot{position:relative;width:30px;height:30px;flex:none;display:block}
-.st-slot img,.rc .rubies .st-slot img,.rw-mini .row .st-slot img,.rw-large .row .st-slot img{position:absolute;left:0;top:0;width:30px;height:30px}
+.st-slot img,.rw-mini .row .st-slot img,.rw-large .row .st-slot img{position:absolute;left:0;top:0;width:30px;height:30px}
 .st-slot .num{position:absolute;left:10px;top:6px;font:700 16px/normal var(--font-family);color:#cbcbcb}
 .ruby-off{opacity:.5}
 /* end of flow: Coffee Lab card becomes the coupon and a "Start over" pill nudges a restart */
@@ -283,21 +296,22 @@ img{display:block}
 .sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0}
 
 /* rubies section stars: grow and shrink, staggered (Figma 181:7653 / 256:22928) */
-.f-rubies .grad img.twinkle{transform:rotate(15deg);animation:twinkle 3s ease-in-out .5s infinite}
-.f-rubies .grad img.twinkle.t2{animation-delay:2s}
-@keyframes twinkle{0%,27%,100%{transform:rotate(15deg) scale(1)}13%{transform:rotate(15deg) scale(1.5)}}
-@media (prefers-reduced-motion:reduce){.f-rubies .grad img.twinkle{animation:none}}
+.f-rubies .grad img.st{mix-blend-mode:overlay}
+.f-rubies .grad img.pulse{animation:hmPulse 2s ease-in-out infinite} /* Figma Star 426:25094: scale 1→1.5→1 at 25/45/65%, 2s loop */
+@keyframes hmPulse{0%,25%,65%,100%{transform:scale(1)}45%{transform:scale(1.5)}}
+@media (prefers-reduced-motion:reduce){.f-rubies .grad img.pulse{animation:none}}
 
-.rc .vb{height:48px;position:relative;border-radius:12px}
-.rc .vb .bg{position:absolute;left:0;top:0;width:209px;height:48px}
-.rc .vb .st{position:absolute;mix-blend-mode:overlay}
-.rc .vb .w{position:absolute;left:0;right:0;top:calc(50% + 1px);transform:translateY(-50%);display:flex;align-items:center;justify-content:space-between;padding:12px}
-.rc .vb .claim{background:#f4f4f4;border-radius:28px;padding:2px 8px;font:400 12px/18px var(--font-family);color:var(--text-strong)}
 /* navigation (50:6157) */
-.f-nav{position:absolute;left:0;bottom:0;width:375px;display:flex;gap:2px;align-items:center;padding:0 8px 24px;background:#fff;border-top:1px solid var(--neutral-d8);box-shadow:inset 0 1px 4px rgba(12,12,13,.05);z-index:5}
-.f-nav button{width:88.25px;display:flex;flex-direction:column;gap:4px;align-items:center;padding:8px 12px;background:none;border:0;cursor:pointer;font:400 12px/normal var(--font-family);color:var(--nav-inactive);white-space:nowrap}
-.f-nav button.on{font-weight:700;color:var(--neutral-0f);padding:8px}
+/* bottom nav: Figma Bottom Nav-Bar 433:25940 */
+.f-nav{position:absolute;left:-1px;right:0;bottom:-2px;display:flex;flex-direction:column;align-items:center;gap:8px;padding-bottom:16px;background:linear-gradient(180deg,rgba(255,255,255,.01),#fff 44.847%);z-index:5}
+.f-nav .pill{width:351px;height:56px;box-sizing:border-box;border-radius:50px;background:rgba(255,255,255,.67);display:flex;align-items:center;justify-content:space-between;padding:4px 0}
+.f-nav .it{position:relative;isolation:isolate;overflow:hidden;width:88.25px;box-sizing:border-box;margin-right:-.667px;display:flex;flex-direction:column;align-items:center;gap:4px;padding:4px;background:none;border:0;border-radius:100px;cursor:pointer;text-decoration:none;font:400 12px/18px var(--font-family);color:#6b6b73;white-space:nowrap}
+.f-nav .it:last-child{margin-right:0}
+.f-nav .it.on{padding:4px 8px;font-weight:700;color:#0f0f0f}
+.f-nav .it.on::before{content:"";position:absolute;left:0;right:.25px;top:0;height:54px;border-radius:100px;background:#ededed;z-index:-1} /* Selection */
+.f-nav .it:focus-visible{outline:3px solid #1a1a1a;outline-offset:-3px}
 .f-nav .ni{width:24px;height:24px;display:flex;align-items:center;justify-content:center}
+.f-nav .home{width:120px;height:4px;border-radius:100px;background:#121217}
 /* Rewards card · mini (136:7396) */
 .rw-mini{background:#fff;display:flex;align-items:center;gap:8px;padding:16px;border-radius:12px;width:100%;overflow:hidden;isolation:isolate;box-shadow:0 4px 4px -1px rgba(12,12,13,.05),0 4px 4px -1px rgba(12,12,13,.1);} /* Figma .Stamp-card/mini */
 .rw-mini .row{flex:1;display:flex;gap:8px}
@@ -354,44 +368,47 @@ body{position:relative}
 .scr{position:absolute;inset:0;z-index:40;overflow:hidden;touch-action:none;user-select:none;-webkit-user-select:none;cursor:none}
 .scr[hidden]{display:none}
 .scr-bg{position:absolute;inset:0;background:rgba(112,39,39,.37);-webkit-backdrop-filter:blur(8.05px);backdrop-filter:blur(8.05px)} /* Frame 26: fill #702727 37% + background blur 16.1 */
-.scr-rays{position:absolute;left:-2px;top:0;width:384px;height:825px;max-width:none;pointer-events:none;transform-origin:190px 324.6px;animation:scrRays 14s linear infinite} /* Frame 27: 10 blurred rays */
+.scr-rays{position:absolute;left:-2px;top:0;width:384px;height:825px;max-width:none;pointer-events:none;transform-origin:190px 324.6px;animation:scrRays 8s linear infinite} /* Frame 27: 10 blurred rays */
 @keyframes scrRays{to{transform:rotate(36deg)}}
+.scr-sun{position:absolute;left:-263px;top:-135px;width:900px;height:900px;border-radius:50%;pointer-events:none;
+  background:repeating-conic-gradient(from 0deg,rgba(248,238,170,.24) 0deg,rgba(248,238,170,0) 9deg,rgba(248,238,170,.24) 18deg);filter:blur(5px);
+  -webkit-mask:radial-gradient(circle,#000 8%,rgba(0,0,0,.6) 30%,transparent 62%);mask:radial-gradient(circle,#000 8%,rgba(0,0,0,.6) 30%,transparent 62%);
+  animation:scrSun 40s linear infinite} /* sunburst behind the ruby (inspired by the reference), centred on the ruby */
+@keyframes scrSun{to{transform:rotate(360deg)}}
 .scr-face,.scr-cv{position:absolute;left:52px;top:151px;width:268px;height:292px;border-radius:16px}
 .scr-face{background:#fff;overflow:hidden;box-shadow:-22px -14px 44px 0 rgba(248,242,197,.5),14px -21px 25px 0 rgba(248,242,197,.41)} /* Frame 30 */
-.scr-face .glow{position:absolute;left:23px;top:52px;width:224px;height:224px;max-width:none;opacity:0} /* Ellipse 9 */
+.scr-glow{position:absolute;left:75px;top:203px;pointer-events:none;width:224px;height:224px;max-width:none;opacity:0} /* Ellipse 9 */
 .scr-cv{outline:none}
 .scr-cv:focus-visible{outline:3px solid #1a1a1a;outline-offset:3px;box-shadow:0 0 0 3px #fff}
 .scr-ruby{position:absolute;left:117px;top:245px;width:140px;height:140px;max-width:none;pointer-events:none;transform-origin:50% 50%} /* Diamond Streamline Cyber */
 .scr-spark{position:absolute;width:18px;height:18px;max-width:none;pointer-events:none;opacity:0}
 .scr-coin{position:absolute;left:118px;top:473px;width:138px;height:138px;max-width:none;pointer-events:none;z-index:3;filter:drop-shadow(0 6px 10px rgba(0,0,0,.18))} /* euro coin – shiny */
-@media (prefers-reduced-motion:reduce){.scr-rays{animation:none}}
+@media (prefers-reduced-motion:reduce){.scr-rays,.scr-sun{animation:none}}
 
-/* ---------- TEMPORARY passcode gate (remove this block, the #gate markup and the gate script to take it out) ---------- */
-#gate{position:fixed;inset:0;z-index:1000;display:flex;align-items:center;justify-content:center;background:#e9e9ec;padding:16px}
-#gate[hidden]{display:none}
-#gate form{width:100%;max-width:320px;background:#fff;border-radius:16px;padding:24px;display:flex;flex-direction:column;gap:12px;box-shadow:0 10px 40px rgba(0,0,0,.12)}
-#gate h1{margin:0;font:700 20px/1.3 var(--font-family);color:#1a1a1a}
-#gate label{font:400 14px/1.4 var(--font-family);color:#555}
-#gate input{font:400 16px var(--font-family);padding:12px 14px;border:1px solid #c8c8c8;border-radius:10px;outline:none}
-#gate input:focus-visible{border-color:#1a1a1a;box-shadow:0 0 0 2px #1a1a1a}
-#gate button{font:700 15px var(--font-family);padding:12px;border:0;border-radius:10px;background:#dd1313;color:#fff;cursor:pointer}
-#gate button:focus-visible{outline:3px solid #1a1a1a;outline-offset:3px}
-#gate .err{min-height:20px;margin:0;font:400 14px var(--font-family);color:#c00}
+
+/* ===== prototype switch (segmented button) – same block in rewards.html ===== */
+.proto-switch{display:flex;gap:2px;padding:3px;border-radius:999px;background:rgba(0,0,0,.07);z-index:50}
+.proto-switch a{display:block;padding:7px 16px;border-radius:999px;font:500 14px/20px var(--font-family);color:#4a4a4a;text-decoration:none;white-space:nowrap;transition:background .2s,color .2s}
+.proto-switch a[aria-current="page"]{background:#fff;color:var(--brand-primary);font-weight:700;box-shadow:0 1px 4px rgba(12,12,13,.15)}
+.proto-switch a:not([aria-current]):hover{color:#1a1a1a}
+.proto-switch a:focus-visible{outline:3px solid #1a1a1a;outline-offset:2px}
+body{flex-direction:column;gap:14px;padding:12px 0}
+.phone{flex:none}
+@media (max-width:430px){body{padding:0;justify-content:flex-start}.proto-switch{position:fixed;top:calc(env(safe-area-inset-top) + 6px);left:50%;transform:translateX(-50%);background:rgba(240,240,240,.92);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px)}
+  .proto-switch a{padding:4px 12px;font-size:12px;line-height:18px}}
+
+/* entry point on Home */
+.f-rubies .hd .yr-open{text-decoration:none;display:flex;align-items:center;gap:4px;background:none;border:0;padding:0;cursor:pointer;font:600 16px/1.4 var(--sds-font);color:var(--sds-text-default)}
+.f-rubies .hd .yr-open:focus-visible{outline:3px solid #1a1a1a;outline-offset:3px;border-radius:4px}
 </style>
 </head>
 <body>
-<!-- TEMPORARY passcode gate -->
-<div id="gate"><form id="gateForm" novalidate>
-  <h1>Enter passcode</h1>
-  <label for="gateInput">This prototype is a work in progress. Type the passcode to continue.</label>
-  <input id="gateInput" type="text" autocomplete="off" autocapitalize="off" spellcheck="false" aria-describedby="gateErr">
-  <button type="submit">Continue</button>
-  <p class="err" id="gateErr" role="alert"></p>
-</form></div>
+<nav class="proto-switch" aria-label="Choose a prototype"><a href="index.html" aria-current="page">Order flow</a><a href="rewards.html">Rewards</a></nav>
+
 <aside class="about-side" aria-labelledby="aboutSideTitle">
   <h2 id="aboutSideTitle">About this prototype</h2>
   <p>A static, dependency-free HTML prototype of the Rubies loyalty flow: earn a ruby with every order from a store, see your progress, and unlock a coupon.</p>
-  <p><strong>Flow:</strong> Home ("Your Rubies and coupons" cards) → Food, coffee → Coffee Lab store (stamp card, tap an item to add it) → Order (payment) → Order status (the stamp card drops in, a new ruby stamp lands with a burst, then the map and pin appear). Each order adds one ruby; after the 4th ruby the demo ends and a Start over button resets it.</p>
+  <p><strong>Flow:</strong> Home ("Your Rubies and coupons" cards) → Food, coffee → Coffee Lab store (stamp card, tap an item to add it) → Order (payment) → Order status (the stamp card drops in, a new ruby stamp lands with a burst, then the map and pin appear). Each order adds one ruby; after the 4th ruby the demo ends and a Start over button resets it. Use the switch at the top, or tap “Your Rubies and coupons” on Home, to open the Rewards prototype.</p>
   <p><strong>Reset:</strong> press Cmd + R (Ctrl + R on Windows) to reload and start again from Home.</p>
 </aside>
 <div class="phone" id="phone">
@@ -412,17 +429,14 @@ body{position:relative}
       </div>
       <div class="f-banner"><div class="bi"><img src="assets/fig/banner-breakfast.png" alt="A good day starts with a good breakfast"></div><img class="pager" src="assets/fig/pager.svg" width="54" height="14" alt=""></div>
       <div class="f-rubies"><div class="sec">
-        <div class="hd"><p>Your Rubies and coupons</p><img class="gems" src="assets/fig/rubies-header-gems.svg" alt=""></div>
+        <div class="hd"><a class="yr-open" href="rewards.html" aria-label="Your Rubies and coupons: open your rewards">Your Rubies and coupons <img src="assets/fig/hm-chevron-16.svg" width="16" height="16" alt=""></a><img class="gems" src="assets/fig/rubies-header-gems.svg" alt=""></div>
         <div class="car hscroll">
-          <button class="rc stamp" id="ekibenCard" aria-label="Ekiben kitchen: 3 of 4 rubies, 1 more to 5 euro off"><span class="top"><img src="assets/fig/logo-ekiben.png" alt="" style="border-radius:50%"><span class="inf"><span class="n">Ekiben kitchen</span><span class="r">★ 4.9 (1418) Asian</span><span class="m">30-40' • Min. €6.00</span></span></span>
-            <span class="rubies"><span class="row" data-rubies="3" data-slots="4"></span></span></button>
-          <button class="rc stamp" id="coffeeCard" data-go="store"><span class="top"><img src="assets/fig/logo-coffeelab.svg" alt=""><span class="inf"><span class="n">Coffee Lab</span><span class="r">★ 4.7 (859) Coffee</span><span class="m">20-25' • Min. €6.00</span></span></span>
-            <span class="rubies"><span class="row" data-coffee-rubies="24"></span></span></button>
-          <button class="rc voucher"><span class="top"><img src="assets/fig/logo-roma.svg" alt=""><span class="inf"><span class="n">Roma Pizza</span><span class="r">★ 4.3 (1815) Pizza</span><span class="m">30-35' • Min. €6.00</span></span></span>
-            <span class="vb"><img class="bg" src="assets/fig/voucher-subtract.svg" alt=""><img class="st" src="assets/fig/voucher-star-a.svg" style="left:99px;top:12px;width:8px;height:8px" alt=""><img class="st" src="assets/fig/voucher-star-b.svg" style="left:3px;top:5px;width:11px;height:11px" alt="">
-              <img class="st" src="assets/fig/voucher-star-c.svg" style="left:106px;top:1px;width:15px;height:16px" alt=""><span class="w"><img src="assets/fig/voucher-2e-discount.svg" width="89.79" height="22.76" alt="2€ discount" style="margin:-2.5px 0 -2.5px -2.5px"><span class="claim">Claim</span></span></span></button>
+          <button class="hc cp" aria-label="Roma Pizza: 2 euro discount coupon"><span class="cr"><span class="cover"><img src="assets/fig/cover-roma.png" alt="" draggable="false"><span class="badge"><span class="lg"><img src="assets/fig/logo-roma.svg" alt=""></span><b>Roma Pizza</b></span></span></span><span id="homeBlk"><span class="blk"><img class="bg" src="assets/fig/rw2-subtract.svg" alt=""><img class="sl" src="assets/fig/rw2-euro.png" alt="" style="left:203px;top:13.69px;width:35px;height:35px"><img class="sl" src="assets/fig/rw2-euro.png" alt="" style="left:6.4px;top:-6.9px;width:35px;height:35px;transform:rotate(60deg)"><img class="sl" src="assets/fig/rw2-euro.png" alt="" style="left:9.4px;top:31.3px;width:25.5px;height:25.5px;transform:rotate(-30deg)"><img class="sl" src="assets/fig/rw2-euro.png" alt="" style="left:235.9px;top:3.5px;width:26.5px;height:26.5px;transform:rotate(150deg)"><img class="ov" src="assets/fig/rw2-star-a.svg" alt="" style="left:39px;top:.69px;width:12.685px;height:12.685px"><img class="ov" src="assets/fig/rw2-star-b.svg" alt="" style="left:182px;top:3.69px;width:17.297px;height:18.451px"><img class="ov" src="assets/fig/rw2-star-c.svg" alt="" style="left:65px;top:40px;width:9.225px;height:9.225px"><span class="w"><span style="width:33px;height:21px"><img src="assets/fig/rw2-2e.svg" alt="" style="left:-2.92px;top:-2.92px;width:39.25px;height:26.83px"></span><span style="width:68.037px;height:13.838px"><img src="assets/fig/rw2-discount.svg" alt="" style="left:-1.46px;top:-1.46px;width:70.95px;height:16.75px"></span></span></span></span></button>
+          <button class="hc" id="ekibenCard" aria-label="Ekiben kitchen: 3 of 4 rubies, 1 more to 5 euro off"><span class="cr"><span class="cover"><img src="assets/fig/rw2-cover-ekiben.jpg" alt="" draggable="false"><span class="badge"><span class="lg"><img src="assets/fig/rw2-logo-ekiben.png" alt=""></span><b>Ekiben kitchen</b></span></span></span><span class="srow" data-rubies="3" data-slots="4"></span></button>
+          <button class="hc" id="coffeeCard" data-go="store"><span class="cr"><span class="cover"><img src="assets/fig/cover-coffeelab.png" alt="" draggable="false"><span class="badge"><span class="lg"><img src="assets/fig/logo-coffeelab.svg" alt=""></span><b>Coffee Lab</b></span></span></span><span class="srow" data-coffee-rubies="24"></span></button>
+          
         </div>
-        <div class="grad"><img src="assets/fig/rubies-wave-1.svg" style="left:-38.5px;top:80.8px;width:528.7px;height:113.2px" alt=""><img src="assets/fig/rubies-wave-2.svg" style="left:-38.5px;top:100.8px;width:528.7px;height:113.2px" alt=""><img src="assets/fig/rubies-wave-3.svg" style="left:-43.8px;top:115.5px;width:539.3px;height:118.5px" alt=""><img class="twinkle" src="assets/fig/rubies-star.svg" style="left:10.5px;top:46.5px;width:21.98px;height:21.98px;mix-blend-mode:overlay" alt=""><img class="twinkle t2" src="assets/fig/rubies-star.svg" style="left:228.5px;top:195.5px;width:21.98px;height:21.98px;mix-blend-mode:overlay" alt=""></div>
+        <div class="grad" aria-hidden="true"><img src="assets/fig/hm-wave-1.svg" style="left:0;top:93.98px;width:432px;height:149px" alt=""><img src="assets/fig/hm-wave-2.svg" style="left:0;top:84.03px;width:432px;height:137px" alt=""><img src="assets/fig/hm-wave-3.svg" style="left:0;top:113.5px;width:432px;height:137px" alt=""><img src="assets/fig/hm-wave-4.svg" style="left:0;top:123.45px;width:432px;height:135px" alt=""><img src="assets/fig/hm-wave-5.svg" style="left:0;top:152.92px;width:432px;height:106px" alt=""><img src="assets/fig/hm-wave-6.svg" style="left:0;top:138.96px;width:432px;height:120px" alt=""><img class="st" src="assets/fig/hm-star-1.svg" style="left:266.66px;top:240.29px;width:25px;height:18px" alt=""><img class="st" src="assets/fig/hm-star-2.svg" style="left:0;top:222.29px;width:25px;height:28px" alt=""><img class="st pulse" src="assets/fig/hm-star-3.svg" style="left:10.84px;top:46.84px;width:22px;height:22px" alt=""></div>
       </div></div>
       <div class="f-sec"><div class="f-sechdr"><span class="t">120 stores</span><span class="l">See all <img src="assets/fig/chevron-right-group.svg" width="8.94" height="15" alt="" style="margin:0 5.5px;transform:scaleX(-1)"></span></div><div class="f-shops hscroll"><button class="f-shop" data-go="store"><div class="cv"><img src="assets/fig/cover-coffeelab.png" alt="" draggable="false"><span class="badge"><img src="assets/fig/icon-moped.svg" width="18" height="18" alt=""><span>0.50€</span><b>Free with</b><img src="assets/fig/efood-pro-badge.png" width="23" height="11" alt="pro" style="object-fit:cover"></span></div>
           <div class="info"><span class="nm">Coffee Lab</span><span class="rt"><img src="assets/fig/icon-star.svg" width="14" height="12.44" alt=""><span class="v">4.7</span><span class="c">(859)</span><span class="k">Coffee</span></span><span class="mt">20' - 25' • Min €6.00</span></div></button><button class="f-shop"><div class="cv"><img src="assets/fig/cover-roma.png" alt="" draggable="false"><span class="badge"><img src="assets/fig/icon-moped.svg" width="18" height="18" alt=""><span>0.50€</span><b>Free with</b><img src="assets/fig/efood-pro-badge.png" width="23" height="11" alt="pro" style="object-fit:cover"></span></div>
@@ -441,11 +455,11 @@ body{position:relative}
       <button class="x" id="aboutClose" type="button" aria-label="Close">×</button>
       <h2 id="aboutSheetTitle">About this prototype</h2>
       <p>A static, dependency-free HTML prototype of the Rubies loyalty flow: earn a ruby with every order from a store, see your progress, and unlock a coupon.</p>
-      <p><strong>Flow:</strong> Home ("Your Rubies and coupons" cards) → Food, coffee → Coffee Lab store (stamp card, tap an item to add it) → Order (payment) → Order status (the stamp card drops in, a new ruby stamp lands with a burst, then the map and pin appear). Each order adds one ruby; after the 4th ruby the demo ends and a Start over button resets it.</p>
+      <p><strong>Flow:</strong> Home ("Your Rubies and coupons" cards) → Food, coffee → Coffee Lab store (stamp card, tap an item to add it) → Order (payment) → Order status (the stamp card drops in, a new ruby stamp lands with a burst, then the map and pin appear). Each order adds one ruby; after the 4th ruby the demo ends and a Start over button resets it. Use the switch at the top, or tap “Your Rubies and coupons” on Home, to open the Rewards prototype.</p>
   <p><strong>Reset:</strong> press Cmd + R (Ctrl + R on Windows) to reload and start again from Home.</p>
     </div>
     <p class="sr-only" id="srStatus" role="status" aria-live="polite"></p>
-    <nav class="f-nav"><button class="on"><span class="ni"><img src="assets/fig/nav-discover-active.svg" width="21" height="24" alt=""></span>Discover</button><button data-go="food"><span class="ni"><img src="assets/fig/nav-cutlery.svg" width="17.875" height="22" alt=""></span>Food,coffee</button><button><span class="ni"><img src="assets/fig/nav-carrot.svg" width="20.985" height="22" alt=""></span>Supermarkets</button><button><span class="ni"><img src="assets/fig/nav-shops.svg" width="21" height="24" alt=""></span>Shops</button></nav>
+    <nav class="f-nav" aria-label="Main"><div class="pill"><button class="it on" aria-current="page" type="button"><span class="ni"><img src="assets/fig/nav2-home.svg" width="20" height="19.16" alt="" style="margin-bottom:.84px"></span>Discover</button><button class="it" type="button" data-go="food"><span class="ni"><img src="assets/fig/nav2-cutlery.svg" width="17.875" height="22" alt=""></span>Food,coffee</button><button class="it" type="button"><span class="ni"><img src="assets/fig/nav2-carrot.svg" width="20.985" height="22" alt=""></span>Supermarket</button><button class="it" type="button"><span class="ni"><img src="assets/fig/nav2-bag.svg" width="21" height="24" alt=""></span>Shops</button></div><span class="home"></span></nav>
   </section>
 
   <!-- 2 · FOOD, COFFEE -->
@@ -468,7 +482,7 @@ body{position:relative}
       <div id="foodList"></div>
       <div style="margin:16px;background:var(--surface-subtle);border-radius:8px;text-align:center;padding:12px" class="s2 b sec">Browse closed stores</div>
     </div>
-    <nav class="f-nav"><button data-go="home"><span class="ni"><img src="assets/fig/nav-shops.svg" width="21" height="24" alt=""></span>Discover</button><button class="on"><span class="ni"><img src="assets/fig/nav-cutlery-active.svg" width="17.875" height="22" alt=""></span>Food,coffee</button><button><span class="ni"><img src="assets/fig/nav-carrot.svg" width="20.985" height="22" alt=""></span>Supermarkets</button><button><span class="ni"><img src="assets/fig/nav-shops.svg" width="21" height="24" alt=""></span>Shops</button></nav>
+    <nav class="f-nav" aria-label="Main"><div class="pill"><button class="it" type="button" data-go="home"><span class="ni"><img src="assets/fig/nav2-home-off.svg" width="20" height="19.16" alt="" style="margin-bottom:.84px"></span>Discover</button><button class="it on" aria-current="page" type="button"><span class="ni"><img src="assets/fig/nav-cutlery-active.svg" width="17.875" height="22" alt=""></span>Food,coffee</button><button class="it" type="button"><span class="ni"><img src="assets/fig/nav2-carrot.svg" width="20.985" height="22" alt=""></span>Supermarket</button><button class="it" type="button"><span class="ni"><img src="assets/fig/nav2-bag.svg" width="21" height="24" alt=""></span>Shops</button></div><span class="home"></span></nav>
   </section>
 
   <!-- 3 · STORE -->
@@ -541,8 +555,10 @@ body{position:relative}
     <!-- scratch card step: shown after "Your order has been confirmed", before the stamp card drops -->
     <div class="scr" id="scr" hidden>
       <div class="scr-bg"></div>
+      <div class="scr-sun"></div>
       <img class="scr-rays" src="assets/fig/scratch-rays.svg" alt="">
-      <div class="scr-face" id="scrFace"><img class="glow" id="scrGlow" src="assets/fig/scratch-ruby-glow.svg" alt=""></div>
+      <div class="scr-face" id="scrFace"></div>
+      <img class="scr-glow" id="scrGlow" src="assets/fig/scratch-ruby-glow.svg" alt="">
       <img class="scr-ruby" id="scrRuby" src="assets/fig/scratch-ruby.svg" alt="">
       <img class="scr-spark" src="assets/fig/spark.svg" alt="" style="left:128px;top:250px">
       <img class="scr-spark" src="assets/fig/spark.svg" alt="" style="left:236px;top:282px;width:11px;height:11px">
@@ -696,7 +712,7 @@ const scratch=(()=>{
   const el=document.getElementById('scr'), cv=document.getElementById('scrCv'), ctx=cv.getContext('2d'), coin=document.getElementById('scrCoin'),
         face=document.getElementById('scrFace'), glow=document.getElementById('scrGlow'), ruby=document.getElementById('scrRuby'),
         sparks=[...el.querySelectorAll('.scr-spark')], phone=document.getElementById('phone');
-  const W=268,H=292, CARD={x:52,y:151}, COIN0={x:118,y:473}, BRUSH=84, NEED=420; // NEED: scratched path ≈ two swipes across the card
+  const W=268,H=292, CARD={x:52,y:151}, COIN0={x:118,y:473}, BRUSH=64; // a wide coin scratch so the card clears faster
   const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
   const pat=new Image(); pat.src='assets/fig/scratch-card-pattern.png';
   const logo=new Image(); logo.src='assets/logo-coffee-lab.jpg';
@@ -723,9 +739,9 @@ const scratch=(()=>{
     if(!(q.x>-30&&q.x<W+30&&q.y>-30&&q.y<H+30)){last=null;return;}
     ctx.globalCompositeOperation='destination-out'; ctx.lineCap='round'; ctx.lineJoin='round'; ctx.lineWidth=BRUSH;
     const a=last||q; ctx.beginPath(); ctx.moveTo(a.x,a.y); ctx.lineTo(q.x,q.y); ctx.stroke();
-    for(let i=0;i<3;i++){ctx.beginPath();ctx.arc(q.x+(Math.random()-.5)*BRUSH*.9,q.y+(Math.random()-.5)*BRUSH*.9,6+Math.random()*12,0,7);ctx.fill();} // ragged coin-scratch edge
+    for(let i=0;i<3;i++){ctx.beginPath();ctx.arc(q.x+(Math.random()-.5)*BRUSH*.9,q.y+(Math.random()-.5)*BRUSH*.9,5+Math.random()*9,0,7);ctx.fill();} // ragged coin-scratch edge
     if(last)path+=Math.hypot(q.x-last.x,q.y-last.y); last=q;
-    if(path>=NEED||(++moves%12===0&&cleared()>.5))reveal();
+    if(++moves%8===0&&cleared()>.92)reveal(); // the ruby shows once the whole card is scratched
   }
   function onMove(e){if(state!=='scratch')return; const p=local(e); moveCoin(p); if(e.pointerType==='mouse'||e.buttons)scratchTo(p);} // mouse scratches on hover; touch while the finger is down
   el.addEventListener('pointermove',onMove);
@@ -736,22 +752,22 @@ const scratch=(()=>{
   const fade=(n,from,to,ms,extra)=>live.push(n.animate([{opacity:from},{opacity:to,...(extra||{})}],{duration:ms,easing:'ease-out',fill:'forwards'}));
   function reveal(){ if(state!=='scratch')return; state='reveal';
     announce('You found a ruby for your Coffee Lab stamp card.');
-    fade(cv,1,0,350,{transform:'scale(1.04)'}); fade(coin,1,0,300,{transform:'translateY(30px)'});
-    live.push(glow.animate([{opacity:0,transform:'scale(.7)'},{opacity:1,transform:'scale(1)'}],{duration:450,easing:'ease-out',fill:'forwards'}));
-    // the ruby pops, orbits and shines
-    live.push(ruby.animate([{scale:.86},{scale:1.12,offset:.35},{scale:1}],{duration:600,easing:'cubic-bezier(.3,1.4,.5,1)',fill:'forwards'}));
-    if(!reduce){const orb=[];for(let i=0;i<=16;i++){const t=i/16*Math.PI*2;orb.push({translate:`${(Math.sin(t)*10).toFixed(2)}px ${(6-Math.cos(t)*6).toFixed(2)}px`,rotate:`${(Math.sin(t*2)*6).toFixed(2)}deg`});}
-      live.push(ruby.animate(orb,{duration:1500,delay:250,iterations:2,easing:'ease-in-out'}));}
-    sparks.forEach((sp,i)=>live.push(sp.animate([{opacity:0,scale:.2},{opacity:1,scale:1.6,offset:.4},{opacity:.9,scale:1,offset:.7},{opacity:0,scale:.4}],{duration:900,delay:350+i*260,iterations:3,easing:'ease-out'})));
-    // then the white card and the backdrop fade away and the order timeline carries on (stamp card drops in)
-    later(()=>{state='fly-wait';
-      fade(face,1,0,350); fade(el.querySelector('.scr-bg'),1,0,500); fade(el.querySelector('.scr-rays'),1,0,500);
-      el.style.pointerEvents='none'; resumeStatus();
-      later(fly,(5.2-SCR_AT)*1000); // the stamp card has landed by now (drop 4.45 – 5.12 s)
-    },1400);
+    fade(cv,1,0,350); fade(coin,1,0,300,{transform:'translateY(30px)'});
+    // the white card disappears; the sun rays keep turning behind the ruby, with its glow
+    later(()=>fade(face,1,0,400),250);
+    // the ruby stays in place and beats like a heart
+    if(!reduce)live.push(ruby.animate([{scale:1},{scale:1.14,offset:.14},{scale:1,offset:.3},{scale:1.09,offset:.44},{scale:1,offset:.62},{scale:1}],{duration:1100,delay:250,easing:'ease-in-out'}));
+    // and sparkles
+    sparks.forEach((sp,i)=>live.push(sp.animate([{opacity:0,scale:.2},{opacity:1,scale:1.6,offset:.4},{opacity:.9,scale:1,offset:.7},{opacity:0,scale:.4}],{duration:900,delay:300+i*200,easing:'ease-out'})));
+    // then the backdrop fades, the order timeline carries on (stamp card drops in) and the ruby flies onto it
+    // one heartbeat (ends at 1.35 s), then the ruby flies onto the stamp card, which drops in meanwhile (lands 1.52 s after we resume)
+    state='fly-wait'; el.style.pointerEvents='none'; resumeStatus();
+    later(()=>fade(el.querySelector('.scr-bg'),1,0,500),900);
+    later(fly,1600);
   }
   function fly(){ state='fly';
-    ruby.getAnimations().forEach(a=>{if(a.effect.getKeyframes().some(f=>f.translate||f.rotate))a.cancel();}); // stop the orbit first so we measure the resting spot
+    ruby.getAnimations().forEach(a=>a.cancel()); // stop the heartbeat
+    fade(glow,1,0,250); fade(el.querySelector('.scr-rays'),1,0,300); fade(el.querySelector('.scr-sun'),1,0,300);
     const tr=document.getElementById('aStampLayer').getBoundingClientRect(), pr=phone.getBoundingClientRect(), sc=pr.width/phone.offsetWidth||1;
     const dx=(tr.left+15*sc-pr.left)/sc-(117+70), dy=(tr.top+15*sc-pr.top)/sc-(245+70), k=30/140;
     live.push(ruby.animate([{translate:'0px 0px',scale:1,rotate:'0deg'},{translate:`${dx*.45}px ${dy*.45-40}px`,scale:.6,rotate:'-12deg',offset:.45},{translate:`${dx}px ${dy}px`,scale:k,rotate:'0deg'}],{duration:550,easing:'cubic-bezier(.45,0,.3,1)',fill:'forwards'}));
@@ -770,6 +786,7 @@ const scratch=(()=>{
 const COFFEE_SLOTS=5; let coffeeRubies=1;
 const ORD=['first','second','third','fourth','fifth'];
 function stampRow(el,have,slots,skip){ // Figma .Ruby stamp for collected rubies, numbered placeholders for the rest
+  if(el.closest('.hc')){ el.innerHTML=Array.from({length:slots},(_,i)=>i<have?`<span class="hs"><img src="assets/fig/stamp-ruby-30.svg" alt="Ruby collected" style="inset:0;width:32px;height:32px"></span>`:`<span class="hs"><img src="assets/fig/hm-stamp-placeholder.svg" alt="" style="inset:0;width:32px;height:32px"></span>`).join(''); return; } // Home cards: Figma 426:25048
   el.innerHTML=Array.from({length:slots},(_,i)=>i<have?`<span class="st-slot"><img src="assets/fig/stamp-ruby-30.svg" alt="Ruby collected"></span>`
     :i===skip?`<span class="st-slot"></span>`:`<span class="st-slot"><img src="assets/fig/stamp-placeholder.svg" alt=""><span class="num">${i+1}</span></span>`).join('');
 }
@@ -784,10 +801,9 @@ const isFull=()=>coffeeRubies>=COFFEE_SLOTS;
 function renderCoffeeCard(){
   const c=document.getElementById('coffeeCard');
   if(isFull()){ // same coupon design as the Roma Pizza card, for Coffee Lab's €2 off
-    const top=c.querySelector('.top')?c.querySelector('.top').outerHTML:'';
-    const vb=document.querySelector('.rc.voucher:not(#coffeeCard) .vb').outerHTML;
-    c.className='rc voucher'; c.removeAttribute('data-go'); c.innerHTML=top+vb; c.setAttribute('aria-label','Coffee Lab: €2 off coupon ready to claim');
-  } else { c.className='rc stamp'; c.dataset.go='store'; c.innerHTML=COFFEE_STAMP_HTML; c.removeAttribute('aria-label'); }
+    const cr=c.querySelector('.cr').outerHTML, blk=document.getElementById('homeBlk').innerHTML;
+    c.className='hc cp'; c.removeAttribute('data-go'); c.innerHTML=cr+blk; c.setAttribute('aria-label','Coffee Lab: €2 off coupon ready to claim');
+  } else { c.className='hc'; c.dataset.go='store'; c.innerHTML=COFFEE_STAMP_HTML; c.removeAttribute('aria-label'); }
   const so=document.getElementById('startOver'), was=so.classList.contains('show');
   so.classList.toggle('show',isComplete());
   if(isComplete()&&!was) announce(`You collected ${FLOW_END} Coffee Lab rubies. The demo ends here. Use the Start over button to play again.`);
@@ -908,16 +924,5 @@ document.querySelectorAll('.hscroll').forEach(el=>{
  const release=()=>{if(!dragging)return;dragging=false;r.classList.remove('shaking');r.classList.add('spring');set(0,0,0);};
  r.addEventListener('pointerup',release);r.addEventListener('pointercancel',release);}
 </script>
-<script>/* TEMPORARY passcode gate: plain check, nothing is encrypted; remembered for this browser tab only */
-(()=>{const g=document.getElementById('gate'),f=document.getElementById('gateForm'),inp=document.getElementById('gateInput'),err=document.getElementById('gateErr');
- const rest=[document.getElementById('phone'),document.querySelector('.about-side')].filter(Boolean);
- const open=()=>{g.hidden=true;rest.forEach(n=>n.inert=false);};
- let ok=false;try{ok=sessionStorage.getItem('rubiesGate')==='1';}catch(e){}
- if(ok){open();return;}
- rest.forEach(n=>n.inert=true); inp.focus();
- f.addEventListener('submit',e=>{e.preventDefault();
-   if(inp.value.trim().toLowerCase()==='wip'){try{sessionStorage.setItem('rubiesGate','1');}catch(_){}open();}
-   else{err.textContent='That passcode is not right. Try again.';inp.select();}});
-})();</script>
 </body>
 </html>

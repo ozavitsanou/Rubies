@@ -4,6 +4,10 @@ A static, dependency-free HTML prototype of the Rubies loyalty flow: earn a ruby
 
 **Flow:** Home ("Your Rubies and coupons" cards) → Food, coffee → Coffee Lab store (stamp card, tap an item to add it) → Order (payment) → Order status (the stamp card drops in, a new ruby stamp lands with a burst, then the map and pin appear). Each order adds one ruby; after the 4th ruby the demo ends and a **Start over** button resets it.
 
+**Two prototypes:** a segmented switch at the top of the page moves between them.
+- **Order flow** (`index.html`): the flow above.
+- **Rewards** (`rewards.html`): a standalone page with **Your stamps** and **Your coupons**, two rows that scroll sideways. Drag a coupon down into the basket, or tap it, and the basket shows the discount applied. The gradients at the bottom move slowly. "Your Rubies and coupons" on Home also opens it.
+
 ## Run
 
 Open `index.html` in a browser, or serve the folder:
@@ -21,7 +25,8 @@ Push this folder to the root of a repository, then in **Settings → Pages** cho
 ## What's inside
 
 ```
-index.html     the whole prototype (HTML, CSS and JS in one file)
+index.html     the order flow prototype (HTML, CSS and JS in one file)
+rewards.html   the rewards prototype (stamp cards, coupons, drag into the basket)
 assets/        store photos, menu items and logos
 assets/fig/    vectors and images taken from the Figma design (icons, ruby stamp, placeholders, banners, map)
 ```
