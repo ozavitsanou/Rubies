@@ -5,13 +5,14 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Your rewards – interactive prototype</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
 <style>
 /* ===== Design tokens – the Figma "Mapped" variables (same as index.html) ===== */
 :root{
   --surface-default:#ffffff; --text-primary:#1a1a1a; --text-secondary:#737373; --nav-inactive:#6b6b73; --neutral-0f:#0f0f0f;
   --brand-primary:#e31f29; --brand-subtle:#ffebeb; --rating-default:#12b280;
   --font-family:'Roboto',system-ui,-apple-system,'Segoe UI',sans-serif;
+  --sds-font:'Inter',var(--font-family); /* section headings use Inter, like the order flow */
   --font-size-s1:12px; --line-height-s1:18px; --font-size-s2:14px; --line-height-s2:21px;
   --font-size-s3:16px; --line-height-s3:24px; --font-size-s6:32px; --line-height-s6:48px;
   --shadow-300:drop-shadow(0 4px 2px rgba(12,12,13,.1)) drop-shadow(0 4px 2px rgba(12,12,13,.05)); /* Figma Drop Shadow/300 */
@@ -46,7 +47,7 @@ img{display:block}
 .actions .l{opacity:.8}
 .actions .r{display:flex;gap:8px;padding:0 12px 0 8px}
 .title{position:absolute;left:1px;top:114px;width:379px;padding:16px 16px 8px;font:700 var(--font-size-s6)/var(--line-height-s6) var(--font-family);color:#000;z-index:2}
-.sec-h{padding:8px 16px;font:700 var(--font-size-s3)/var(--line-height-s3) var(--font-family);color:#000}
+.sec-h{padding:8px 16px;font:600 var(--font-size-s3)/var(--line-height-s3) var(--sds-font);color:#000}
 /* the two carousels scroll sideways */
 .car{display:flex;gap:12px;overflow-x:auto;overflow-y:hidden;scroll-snap-type:x mandatory;scroll-padding:0 16px;padding:0 16px 10px;margin-bottom:-10px;scrollbar-width:none;overscroll-behavior-x:contain}
 .car::-webkit-scrollbar{display:none}
@@ -191,10 +192,10 @@ img{display:block}
     <div class="content">
       <h2 class="sec-h" id="cpTitle">Your coupons</h2>
       <div class="car" id="couponRow"></div>
-      <p class="hint" id="hint">Drag or tap to add in the basket</p>
+      <p class="hint" id="hint">Drag or tap to add to the basket</p>
     </div>
     <div class="cta">
-      <div class="basket" id="basket"><span class="ap" id="applied"><span class="lg"><img id="apLogo" src="assets/logo-roma.png" alt=""></span><span class="tx"><b id="apAmt">2€ discount applied!</b><span id="apText">discount applied</span></span></span><span class="dv" aria-hidden="true"></span><span class="bk"><span class="n" id="apN">1 offer</span><span class="ic" aria-hidden="true"><img class="abs" src="assets/fig/rw2-basket.svg" alt=""></span></span></div></div>
+      <div class="basket" id="basket"><span class="ap" id="applied"><span class="lg"><img id="apLogo" src="assets/logo-roma.png" alt=""></span><span class="tx"><b id="apAmt">€2 discount applied!</b><span id="apText">discount applied</span></span></span><span class="dv" aria-hidden="true"></span><span class="bk"><span class="n" id="apN">1 offer</span><span class="ic" aria-hidden="true"><img class="abs" src="assets/fig/rw2-basket.svg" alt=""></span></span></div></div>
     <div class="grad" aria-hidden="true">
       <div class="wave"><div><img class="abs" src="assets/fig/rw2-wave.svg" alt=""></div></div>
       <img class="abs glow" src="assets/fig/rw2-glow.svg" alt="">
@@ -228,7 +229,7 @@ const cardTop=(c)=>`<span class="cr"><span class="cover"><img src="assets/fig/${
   <span class="badge"><span class="lg"><img src="assets/fig/${c.logo}" alt=""></span><b>${c.name}</b></span></span></span>`;
 document.getElementById('stampRow').innerHTML=STAMPS.map(c=>`<div class="rcard" role="group" aria-label="${c.name}: ${c.have} of ${c.slots} rubies">${cardTop(c)}
   <span class="srow">${Array.from({length:c.slots},(_,i)=>i<c.have?`<span class="st"><img src="assets/fig/stamp-ruby-30.svg" alt=""></span>`:`<span class="st"><img src="assets/fig/stamp-placeholder.svg" alt=""><span class="n">${i+1}</span></span>`).join('')}</span></div>`).join('');
-// Block-coupon (415:22851): ticket shape, euro coins + stars in soft light, "2€ discount"
+// Block-coupon (415:22851): ticket shape, euro coins + stars in soft light, "€2 discount"
 const BLK=`<span class="blk"><img class="abs bg" src="assets/fig/rw2-subtract.svg" alt="">
   <img class="abs sl" src="assets/fig/rw2-euro.png" alt="" style="left:203px;top:13.69px;width:35px;height:35px">
   <img class="abs sl" src="assets/fig/rw2-euro.png" alt="" style="left:6.4px;top:-6.9px;width:35px;height:35px;transform:rotate(60deg)">
@@ -273,7 +274,7 @@ document.getElementById('couponRow').innerHTML=COUPONS.map((c,i)=>`<div class="r
     if(!inBasket.length){bk.classList.remove('on');return;}
     const c=COUPONS[inBasket[inBasket.length-1]];
     document.getElementById('apLogo').src='assets/fig/'+c.logo;
-    document.getElementById('apAmt').textContent=`${c.off||2}€ discount applied!`;
+    document.getElementById('apAmt').textContent=`€${c.off||2} discount applied!`;
     document.getElementById('apText').textContent=`${c.short||c.name} discount applied`;
     document.getElementById('apN').textContent=`${added} ${added==1?'offer':'offers'}`;
   }
