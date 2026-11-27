@@ -400,6 +400,11 @@ body{flex-direction:column;gap:14px;padding:12px 0}
 /* entry point on Home */
 .f-rubies .hd .yr-open{text-decoration:none;display:flex;align-items:center;gap:4px;background:none;border:0;padding:0;cursor:pointer;font:600 16px/1.4 var(--sds-font);color:var(--sds-text-default)}
 .f-rubies .hd .yr-open:focus-visible{outline:3px solid #1a1a1a;outline-offset:3px;border-radius:4px}
+/* phones: the page never scrolls or bounces, so the bottom bar stays on the bottom edge; the real home indicator replaces the drawn one */
+@media (max-width:430px){html,body{height:100%;overflow:hidden;overscroll-behavior:none}body{min-height:0}.phone{height:100%;height:100dvh}
+  .f-nav{padding-bottom:max(8px,env(safe-area-inset-bottom))}.f-nav .home{display:none}
+  .statusbar,.sbwhite{display:none!important} /* the phone shows its own status bar */
+  .screen{top:calc(env(safe-area-inset-top,0px) + 44px - 62px)}}
 </style>
 </head>
 <body>

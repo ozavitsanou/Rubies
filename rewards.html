@@ -148,6 +148,14 @@ img{display:block}
 .about-side p{margin:0 0 10px}
 @media (min-width:1100px){.about-side{display:block}}
 
+/* phones: the page itself never scrolls; the screen scrolls inside so the basket is never hidden, and the bottom bar is pinned to the bottom edge */
+@media (max-width:430px){html,body{height:100%;overflow:hidden;overscroll-behavior:none}body{min-height:0}
+  .phone{height:100%;height:100dvh;overflow:hidden auto;overscroll-behavior:contain;padding-bottom:0}
+  .bg-ellipse{height:300px;object-fit:cover;object-position:top} /* only its top 300px is ever on screen; keeps the scroll length at the 812 layout */
+  .bnav{position:fixed;left:0;right:0;bottom:0;max-width:430px;margin:0 auto;padding-bottom:max(8px,env(safe-area-inset-bottom))}.bnav .home{display:none}
+  .statusbar{display:none} /* the phone shows its own status bar */
+  .phone>:not(.bnav){translate:0 calc(env(safe-area-inset-top,0px) + 44px - 62px)}
+  .coupons{overflow:clip}} /* the glow is clipped by the 812 frame on desktop; clip it here too so the screen scrolls only as far as the basket */
 </style>
 </head>
 <body>
@@ -239,7 +247,7 @@ document.getElementById('couponRow').innerHTML=COUPONS.map((c,i)=>`<div class="r
   const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
   let drag=null, added=0, dragged=false; const inBasket=[];
   const sc=()=>phone.getBoundingClientRect().width/phone.offsetWidth||1;
-  const loc=(x,y)=>{const r=phone.getBoundingClientRect(),k=sc();return {x:(x-r.left)/k,y:(y-r.top)/k};};
+  const loc=(x,y)=>{const r=phone.getBoundingClientRect(),k=sc();return {x:(x-r.left)/k+phone.scrollLeft,y:(y-r.top)/k+phone.scrollTop};}; // the screen scrolls on phones
   const over=(x,y)=>{const r=bk.getBoundingClientRect(),p=30;return x>r.left-p&&x<r.right+p&&y>r.top-p&&y<r.bottom+p;};
   const say=m=>{const s=document.getElementById('sr');s.textContent='';setTimeout(()=>s.textContent=m,50);};
   function ghost(card){const r=card.getBoundingClientRect(),p=loc(r.left,r.top),k=sc(),g=card.cloneNode(true);
