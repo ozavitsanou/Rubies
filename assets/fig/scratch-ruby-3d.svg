@@ -1,0 +1,37 @@
+<svg width="140" height="140" viewBox="0 0 140 140" fill="none" xmlns="http://www.w3.org/2000/svg">
+<!-- glossy 3D ruby for the scratch card: same outline as scratch-ruby.svg, shaded facets lit from the top left, soft rounded edges and shine -->
+<defs>
+  <linearGradient id="eL" x1="10" y1="22" x2="44" y2="62" gradientUnits="userSpaceOnUse"><stop stop-color="#FFD0C6"/><stop offset="1" stop-color="#FF7F72"/></linearGradient>
+  <linearGradient id="cL" x1="34" y1="20" x2="58" y2="58" gradientUnits="userSpaceOnUse"><stop stop-color="#FF7A6C"/><stop offset="1" stop-color="#EC3A31"/></linearGradient>
+  <linearGradient id="cM" x1="56" y1="22" x2="84" y2="62" gradientUnits="userSpaceOnUse"><stop stop-color="#FF6457"/><stop offset="1" stop-color="#DA272B"/></linearGradient>
+  <linearGradient id="cR" x1="78" y1="20" x2="106" y2="60" gradientUnits="userSpaceOnUse"><stop stop-color="#D53031"/><stop offset="1" stop-color="#A11C24"/></linearGradient>
+  <linearGradient id="eR" x1="100" y1="22" x2="130" y2="62" gradientUnits="userSpaceOnUse"><stop stop-color="#C72A2D"/><stop offset="1" stop-color="#8F1820"/></linearGradient>
+  <linearGradient id="pL" x1="12" y1="62" x2="62" y2="118" gradientUnits="userSpaceOnUse"><stop stop-color="#FF6A5B"/><stop offset="1" stop-color="#D02428"/></linearGradient>
+  <linearGradient id="pM" x1="50" y1="62" x2="84" y2="124" gradientUnits="userSpaceOnUse"><stop stop-color="#E4332F"/><stop offset="1" stop-color="#A3171F"/></linearGradient>
+  <linearGradient id="pR" x1="96" y1="62" x2="84" y2="122" gradientUnits="userSpaceOnUse"><stop stop-color="#A81F26"/><stop offset="1" stop-color="#6B0E16"/></linearGradient>
+  <linearGradient id="gloss" x1="20" y1="24" x2="40" y2="58" gradientUnits="userSpaceOnUse"><stop stop-color="#FFFFFF" stop-opacity=".95"/><stop offset="1" stop-color="#FFFFFF" stop-opacity="0"/></linearGradient>
+  <linearGradient id="reflect" x1="70" y1="66" x2="70" y2="118" gradientUnits="userSpaceOnUse"><stop stop-color="#FFFFFF" stop-opacity=".2"/><stop offset="1" stop-color="#FFFFFF" stop-opacity="0"/></linearGradient>
+</defs>
+<!-- rounded, puffy silhouette under the facets -->
+<path d="M70 125.4L8.75 61.25L32.08 20.42H107.92L131.25 61.25L70 125.4Z" fill="#D7292B" stroke="#D7292B" stroke-width="7" stroke-linejoin="round"/>
+<!-- crown -->
+<path d="M8.75 61.25L32.08 20.42L43.75 61.25Z" fill="url(#eL)"/>
+<path d="M32.08 20.42H70L43.75 61.25Z" fill="url(#cL)"/>
+<path d="M43.75 61.25L70 20.42L96.25 61.25Z" fill="url(#cM)"/>
+<path d="M70 20.42H107.92L96.25 61.25Z" fill="url(#cR)"/>
+<path d="M107.92 20.42L131.25 61.25H96.25Z" fill="url(#eR)"/>
+<!-- pavilion -->
+<path d="M8.75 61.25H43.75L70 125.4Z" fill="url(#pL)"/>
+<path d="M43.75 61.25H96.25L70 125.4Z" fill="url(#pM)"/>
+<path d="M96.25 61.25H131.25L70 125.4Z" fill="url(#pR)"/>
+<!-- soft facet edges (bevel light) -->
+<path d="M8.75 61.25H131.25" stroke="#FFFFFF" stroke-opacity=".45" stroke-width="1.6" stroke-linecap="round"/>
+<path d="M32.08 20.42H107.92" stroke="#FFFFFF" stroke-opacity=".7" stroke-width="1.8" stroke-linecap="round"/>
+<path d="M32.08 20.42L43.75 61.25L70 20.42L96.25 61.25L107.92 20.42M43.75 61.25L70 125.4L96.25 61.25" stroke="#FFFFFF" stroke-opacity=".22" stroke-width="1.2" stroke-linejoin="round"/>
+<!-- shine -->
+<path d="M14 58L31 27.5C32.5 25 35.5 25.5 36 28.5L39.5 52C40 55.5 37.5 58 34 58Z" fill="url(#gloss)"/>
+<path d="M58 70H82L70 108Z" fill="url(#reflect)"/>
+<path d="M17 66C26 76 38 89 50 100" stroke="#FFFFFF" stroke-opacity=".55" stroke-width="3" stroke-linecap="round"/>
+<path d="M58 26C58 30 60 32 64 32C60 32 58 34 58 38C58 34 56 32 52 32C56 32 58 30 58 26Z" fill="#FFFFFF"/>
+<circle cx="88" cy="30" r="2.2" fill="#FFFFFF" fill-opacity=".8"/>
+</svg>

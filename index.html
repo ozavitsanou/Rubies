@@ -379,16 +379,11 @@ body{position:relative}
   animation:scrSun 40s linear infinite} /* sunburst behind the ruby (inspired by the reference), centred on the ruby */
 @keyframes scrSun{to{transform:rotate(360deg)}}
 .scr-face,.scr-cv{position:absolute;left:52px;top:151px;width:268px;height:292px;border-radius:16px}
-.scr-face{background:linear-gradient(180deg,#fffaf0 0%,#fdf1dc 100%);overflow:hidden;box-shadow:-22px -14px 44px 0 rgba(248,242,197,.5),14px -21px 25px 0 rgba(248,242,197,.41)} /* Frame 30 · revealed side: soft cream gradient, a puffy two-tone circle behind the ruby and two puffy curves (light take on the Home banner) */
-.scr-face img{position:absolute;max-width:none;pointer-events:none}
-.scr-face .sf-circle{left:35px;top:70px;width:200px;height:200px;transform-origin:100px 94px;animation:sfBreathe 2.6s ease-in-out infinite}
-.scr-face .sf-waves{left:0;bottom:0;width:268px;height:112px}
-@keyframes sfBreathe{0%,100%{transform:scale(1)}50%{transform:scale(1.045)}}
-@media (prefers-reduced-motion:reduce){.scr-face .sf-circle{animation:none}}
+.scr-face{background:#fff7ec url(assets/fig/scratch-face-curve.svg) center/100% 100% no-repeat;overflow:hidden;box-shadow:-22px -14px 44px 0 rgba(248,242,197,.5),14px -21px 25px 0 rgba(248,242,197,.41)} /* Frame 30 · revealed side: two flat colours split by one curve behind the ruby */
 .scr-glow{position:absolute;left:75px;top:203px;pointer-events:none;width:224px;height:224px;max-width:none;opacity:0} /* Ellipse 9 */
 .scr-cv{outline:none}
 .scr-cv:focus-visible{outline:3px solid #1a1a1a;outline-offset:3px;box-shadow:0 0 0 3px #fff}
-.scr-ruby{position:absolute;left:117px;top:245px;width:140px;height:140px;max-width:none;pointer-events:none;transform-origin:50% 50%;filter:drop-shadow(0 6px 10px rgba(215,73,140,.22))} /* very light pink shadow */ /* Diamond Streamline Cyber */
+.scr-ruby{position:absolute;left:117px;top:245px;width:140px;height:140px;max-width:none;pointer-events:none;transform-origin:50% 50%} /* Diamond Streamline Cyber */
 .scr-spark{position:absolute;width:18px;height:18px;max-width:none;pointer-events:none;opacity:0}
 .scr-coin{position:absolute;left:118px;top:473px;width:138px;height:138px;max-width:none;pointer-events:none;z-index:3;filter:drop-shadow(0 6px 10px rgba(0,0,0,.18))} /* euro coin – shiny */
 @media (prefers-reduced-motion:reduce){.scr-rays,.scr-sun{animation:none}}
@@ -571,9 +566,9 @@ body{flex-direction:column;gap:14px;padding:12px 0}
       <div class="scr-bg"></div>
       <div class="scr-sun"></div>
       <img class="scr-rays" src="assets/fig/scratch-rays.svg" alt="">
-      <div class="scr-face" id="scrFace"><img class="sf-waves" src="assets/fig/scratch-face-waves.svg" alt=""><img class="sf-circle" src="assets/fig/scratch-face-circle.svg" alt=""></div>
+      <div class="scr-face" id="scrFace"></div>
       <img class="scr-glow" id="scrGlow" src="assets/fig/scratch-ruby-glow.svg" alt="">
-      <img class="scr-ruby" id="scrRuby" src="assets/fig/scratch-ruby.svg" alt="">
+      <img class="scr-ruby" id="scrRuby" src="assets/fig/scratch-ruby-3d.svg" alt="">
       <img class="scr-spark" src="assets/fig/spark.svg" alt="" style="left:128px;top:250px">
       <img class="scr-spark" src="assets/fig/spark.svg" alt="" style="left:236px;top:282px;width:11px;height:11px">
       <img class="scr-spark" src="assets/fig/spark.svg" alt="" style="left:140px;top:350px;width:8px;height:8px">
