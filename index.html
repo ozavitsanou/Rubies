@@ -380,6 +380,7 @@ body{position:relative}
 @keyframes scrSun{to{transform:rotate(360deg)}}
 .scr-face,.scr-cv{position:absolute;left:52px;top:151px;width:268px;height:292px;border-radius:16px}
 .scr-face{background:#fff7ec url(assets/fig/scratch-face-curve.svg) center/100% 100% no-repeat;overflow:hidden;box-shadow:-22px -14px 44px 0 rgba(248,242,197,.5),14px -21px 25px 0 rgba(248,242,197,.41)} /* Frame 30 · revealed side: two flat colours split by one curve behind the ruby */
+.scr-face .sf-burst{position:absolute;left:15px;top:44px;width:240px;height:240px;max-width:none;pointer-events:none} /* circle with sun rays, centred on the ruby */
 .scr-glow{position:absolute;left:75px;top:203px;pointer-events:none;width:224px;height:224px;max-width:none;opacity:0} /* Ellipse 9 */
 .scr-cv{outline:none}
 .scr-cv:focus-visible{outline:3px solid #1a1a1a;outline-offset:3px;box-shadow:0 0 0 3px #fff}
@@ -566,7 +567,7 @@ body{flex-direction:column;gap:14px;padding:12px 0}
       <div class="scr-bg"></div>
       <div class="scr-sun"></div>
       <img class="scr-rays" src="assets/fig/scratch-rays.svg" alt="">
-      <div class="scr-face" id="scrFace"></div>
+      <div class="scr-face" id="scrFace"><img class="sf-burst" src="assets/fig/scratch-face-burst.svg" alt=""></div>
       <img class="scr-glow" id="scrGlow" src="assets/fig/scratch-ruby-glow.svg" alt="">
       <img class="scr-ruby" id="scrRuby" src="assets/fig/scratch-ruby-3d.svg" alt="">
       <img class="scr-spark" src="assets/fig/spark.svg" alt="" style="left:128px;top:250px">

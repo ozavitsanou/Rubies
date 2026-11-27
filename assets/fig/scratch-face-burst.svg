@@ -1,0 +1,10 @@
+<svg width="240" height="240" viewBox="0 0 240 240" fill="none" xmlns="http://www.w3.org/2000/svg">
+<!-- circle behind the revealed ruby with a fan of soft sun beams (like the reference reward cards), flat, no shadows -->
+<defs>
+  <radialGradient id="disc" cx="0.5" cy="0.5" r="0.5"><stop offset="0" stop-color="#FFEFE4"/><stop offset="1" stop-color="#FFCFB8"/></radialGradient>
+  <radialGradient id="beam" cx="120" cy="120" r="116" gradientUnits="userSpaceOnUse"><stop offset="0.3" stop-color="#FFFFFF" stop-opacity=".95"/><stop offset="0.85" stop-color="#FFFFFF" stop-opacity=".4"/><stop offset="1" stop-color="#FFFFFF" stop-opacity="0"/></radialGradient>
+  <filter id="soft" x="-10%" y="-10%" width="120%" height="120%"><feGaussianBlur stdDeviation="1.8"/></filter>
+</defs>
+<circle cx="120" cy="120" r="104" fill="url(#disc)"/>
+<path fill="url(#beam)" filter="url(#soft)" d="M120 120L4.7 103.8L12.0 76.4Z M120 120L27.0 49.9L60.0 20.2Z M120 120L87.9 8.0L120.0 3.5Z M120 120L148.2 7.0L191.7 28.2Z M120 120L211.8 48.3L228.0 76.4Z M120 120L235.8 107.8L233.0 148.2Z M120 120L218.8 181.7L203.8 200.9Z M120 120L25.8 188.5L13.6 167.4Z"/>
+</svg>
