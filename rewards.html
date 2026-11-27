@@ -131,11 +131,12 @@ img{display:block}
 @keyframes rwFloat{from{translate:0 4px}to{translate:0 -8px}}
 /* bottom nav: Figma Bottom Nav-Bar 433:25940 */
 .bnav{position:absolute;left:-1px;right:0;bottom:-2px;display:flex;flex-direction:column;align-items:center;gap:8px;padding-bottom:16px;background:linear-gradient(180deg,rgba(255,255,255,.01),#fff 44.847%);z-index:5}
-.bnav .pill{width:351px;height:56px;box-sizing:border-box;border-radius:50px;background:rgba(255,255,255,.67);display:flex;align-items:center;justify-content:space-between;padding:4px 0}
-.bnav .it{position:relative;isolation:isolate;overflow:hidden;width:88.25px;box-sizing:border-box;margin-right:-.667px;display:flex;flex-direction:column;align-items:center;gap:4px;padding:4px;background:none;border:0;border-radius:100px;cursor:pointer;text-decoration:none;font:400 12px/18px var(--font-family);color:#6b6b73;white-space:nowrap}
+.bnav .pill{position:relative;z-index:0;width:351px;height:56px;box-sizing:border-box;border-radius:50px;background:rgba(255,255,255,.67);box-shadow:inset 1px 1px 1px rgba(255,255,255,.9),inset -1px -1px 1px rgba(255,255,255,.5),0 0 0 .5px rgba(0,0,0,.04);display:flex;align-items:center;justify-content:space-between;padding:4px 0}
+.bnav .pill::before{content:"";position:absolute;inset:0;border-radius:inherit;-webkit-backdrop-filter:blur(4px) saturate(1.4);backdrop-filter:blur(4px) saturate(1.4);z-index:-1} /* Glass */
+.bnav .it{position:relative;overflow:hidden;width:88.25px;box-sizing:border-box;margin-right:-.667px;display:flex;flex-direction:column;align-items:center;gap:4px;padding:4px;background:none;border:0;border-radius:100px;cursor:pointer;text-decoration:none;font:400 12px/18px var(--font-family);color:#6b6b73;white-space:nowrap}
 .bnav .it:last-child{margin-right:0}
 .bnav .it.on{padding:4px 8px;font-weight:700;color:#0f0f0f}
-.bnav .it.on::before{content:"";position:absolute;left:0;right:.25px;top:0;height:54px;border-radius:100px;background:#ededed;z-index:-1} /* Selection */
+.bnav .it.on::before{content:"";position:absolute;left:0;top:0;width:88px;height:54px;border-radius:100px;-webkit-backdrop-filter:brightness(.87629) contrast(1.14118);backdrop-filter:brightness(.87629) contrast(1.14118);pointer-events:none;z-index:1} /* Selection: #EDEDED, Plus darker on everything behind it (bar, gradient, page) */
 .bnav .it:focus-visible{outline:3px solid #1a1a1a;outline-offset:-3px}
 .bnav .ni{width:24px;height:24px;display:flex;align-items:center;justify-content:center}
 .bnav .home{width:120px;height:4px;border-radius:100px;background:#121217}
@@ -193,7 +194,7 @@ img{display:block}
       <p class="hint" id="hint">Drag or tap to add in the basket</p>
     </div>
     <div class="cta">
-      <div class="basket" id="basket"><span class="ap" id="applied"><span class="lg"><img id="apLogo" src="assets/fig/logo-roma.svg" alt=""></span><span class="tx"><b id="apAmt">2€ discount applied!</b><span id="apText">discount applied</span></span></span><span class="dv" aria-hidden="true"></span><span class="bk"><span class="n" id="apN">1 offer</span><span class="ic" aria-hidden="true"><img class="abs" src="assets/fig/rw2-basket.svg" alt=""></span></span></div></div>
+      <div class="basket" id="basket"><span class="ap" id="applied"><span class="lg"><img id="apLogo" src="assets/logo-roma.png" alt=""></span><span class="tx"><b id="apAmt">2€ discount applied!</b><span id="apText">discount applied</span></span></span><span class="dv" aria-hidden="true"></span><span class="bk"><span class="n" id="apN">1 offer</span><span class="ic" aria-hidden="true"><img class="abs" src="assets/fig/rw2-basket.svg" alt=""></span></span></div></div>
     <div class="grad" aria-hidden="true">
       <div class="wave"><div><img class="abs" src="assets/fig/rw2-wave.svg" alt=""></div></div>
       <img class="abs glow" src="assets/fig/rw2-glow.svg" alt="">
@@ -214,14 +215,14 @@ img{display:block}
 <script>
 /* ---------- data: stamp cards and coupons ---------- */
 const STAMPS=[
-  {name:'Coffee Lab', cover:'cover-coffeelab.png', logo:'logo-coffeelab.svg', have:2, slots:5},
-  {name:'Ekiben kitchen', cover:'rw2-cover-ekiben.jpg', logo:'rw2-logo-ekiben.png', have:3, slots:5},
-  {name:'Roma Pizza', cover:'cover-roma.png', logo:'logo-roma.svg', have:1, slots:5},
+  {name:'Coffee Lab', cover:'cover-coffeelab.png', logo:'../logo-coffee-lab.jpg', have:2, slots:5},
+  {name:'The Big Bad Wolf', cover:'cover-bbw.png', logo:'../logo-bbw.jpg', have:3, slots:5},
+  {name:'Roma Pizza', cover:'cover-roma.png', logo:'../logo-roma.png', have:1, slots:5},
 ];
 const COUPONS=[
-  {name:'Ekiben kitchen', short:'Ekiben', cover:'rw2-cover-ekiben.jpg', logo:'rw2-logo-ekiben.png'},
-  {name:'Roma Pizza', short:'Roma', cover:'cover-roma.png', logo:'logo-roma.svg'},
-  {name:'Coffee Lab', cover:'cover-coffeelab.png', logo:'logo-coffeelab.svg'},
+  {name:'The Big Bad Wolf', short:'Big Bad Wolf', cover:'cover-bbw.png', logo:'../logo-bbw.jpg'},
+  {name:'Roma Pizza', short:'Roma', cover:'cover-roma.png', logo:'../logo-roma.png'},
+  {name:'Coffee Lab', cover:'cover-coffeelab.png', logo:'../logo-coffee-lab.jpg'},
 ];
 const cardTop=(c)=>`<span class="cr"><span class="cover"><img src="assets/fig/${c.cover}" alt="" draggable="false">
   <span class="badge"><span class="lg"><img src="assets/fig/${c.logo}" alt=""></span><b>${c.name}</b></span></span></span>`;
